@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - ExamGuard Smart Examination Monitoring</title>
+    <style>
+        :root {
+            --bg-gradient-start: #fff7f2;
+            --bg-gradient-mid: #fdeee7;
+            --bg-gradient-end: #fce7df;
+
+            --coral-primary: #f43f5e;
+            --coral-hover: #e11d48;
+            --coral-light: #fff1f2;
+            --coral-border: #fecdd3;
+            --coral-shadow: rgba(244, 63, 94, 0.28);
+
+            --text-dark: #1e293b;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+
+            --card-bg: #ffffff;
+            --input-bg: #f8fafc;
+            --input-border: #e2e8f0;
+            --input-focus-border: #fb7185;
+
+            --radius-input: 12px;
+            --radius-card: 24px;
+            --radius-btn: 12px;
+            --radius-full: 9999px;
+
+            --shadow-card: 0 20px 45px -10px rgba(225, 112, 85, 0.12), 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-btn: 0 6px 18px var(--coral-shadow);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 45%, var(--bg-gradient-end) 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 1.5rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Abstract Floating Pastel Background Blobs */
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(50px);
+            opacity: 0.55;
+        }
+
+        .bg-blob-1 {
+            width: 440px;
+            height: 440px;
+            background: #fed7aa;
+            top: -120px;
+            left: -100px;
+        }
+
+        .bg-blob-2 {
+            width: 520px;
+            height: 520px;
+            background: #fecdd3;
+            bottom: -160px;
+            right: -100px;
+        }
+
+        .bg-blob-3 {
+            width: 300px;
+            height: 300px;
+            background: #ffe4e6;
+            top: 35%;
+            left: 28%;
+        }
+
+        /* Dotted Grid Pattern Decoration */
+        .bg-dots {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            background-image: radial-gradient(#fb7185 1.5px, transparent 1.5px);
+            background-size: 14px 14px;
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-dots-left {
+            top: 28%;
+            left: 42%;
+        }
+
+        /* Split-Screen Main Layout */
+        .split-layout {
+            position: relative;
+            z-index: 1;
+            max-width: 1140px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 3.5rem;
+        }
+
+        /* LEFT SIDE: Brand & Identity Section */
+        .left-branding {
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #fb7185 0%, var(--coral-primary) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 8px 16px var(--coral-shadow);
+        }
+
+        .brand-text-block h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-text-block h1 span {
+            color: var(--coral-primary);
+        }
+
+        .brand-text-block p {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+        }
+
+        .tagline-group {
+            margin-top: 0.25rem;
+        }
+
+        .main-heading {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .accent-heading {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--coral-primary);
+            letter-spacing: -0.01em;
+            margin-top: 0.25rem;
+        }
+
+        .supporting-text {
+            font-size: 0.95rem;
+            color: var(--text-body);
+            line-height: 1.55;
+            max-width: 420px;
+            margin-top: 0.4rem;
+        }
+
+        /* 3 Compact Feature Highlights */
+        .features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            margin-top: 0.25rem;
+            max-width: 440px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .feature-icon-box {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-icon-box.shield {
+            background: #ffe4e6;
+            color: #f43f5e;
+        }
+
+        .feature-icon-box.chart {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+
+        .feature-icon-box.clipboard {
+            background: #fce7f3;
+            color: #db2777;
+        }
+
+        .feature-info h4 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.15rem;
+        }
+
+        .feature-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Student Illustration */
+        .illustration-wrap {
+            max-width: 420px;
+            margin-top: 0.5rem;
+        }
+
+        .illustration-img {
+            width: 100%;
+            height: auto;
+            border-radius: 18px;
+            display: block;
+            object-fit: cover;
+            box-shadow: 0 14px 32px rgba(244, 63, 94, 0.09);
+        }
+
+        /* RIGHT SIDE: Elevated White Login Card */
+        .login-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-card);
+            padding: 3rem 2.5rem;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .card-header-block {
+            margin-bottom: 1.75rem;
+        }
+
+        .welcome-title {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+            margin-bottom: 0.35rem;
+        }
+
+        .welcome-subtitle {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+        }
+
+        /* Form Stack */
+        .form-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .field-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .field-label span.req {
+            color: var(--coral-primary);
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            color: #94a3b8;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 48px;
+            background: var(--input-bg);
+            border: 1.5px solid var(--input-border);
+            border-radius: var(--radius-input);
+            padding: 0 1rem 0 2.75rem;
+            font-size: 0.94rem;
+            color: var(--text-dark);
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            background: #ffffff;
+            border-color: var(--input-focus-border);
+            box-shadow: 0 0 0 3.5px rgba(251, 113, 133, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-light);
+        }
+
+        /* Password Toggle */
+        .toggle-pwd-btn {
+            position: absolute;
+            right: 14px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: color 0.15s ease;
+        }
+
+        .toggle-pwd-btn:hover {
+            color: var(--text-dark);
+        }
+
+        /* Options Row: Remember Me & Forgot Password */
+        .options-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            margin-top: -0.25rem;
+        }
+
+        .remember-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-body);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .remember-label input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--coral-primary);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .forgot-link {
+            color: var(--coral-primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .forgot-link:hover {
+            color: var(--coral-hover);
+            text-decoration: underline;
+        }
+
+        /* Primary Sign In Button */
+        .btn-signin {
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(135deg, #fb7185 0%, var(--coral-primary) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-btn);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: var(--shadow-btn);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            transition: all 0.2s ease;
+            margin-top: 0.5rem;
+        }
+
+        .btn-signin:hover {
+            background: linear-gradient(135deg, var(--coral-primary) 0%, var(--coral-hover) 100%);
+            box-shadow: 0 8px 22px rgba(244, 63, 94, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-signin:active {
+            transform: translateY(0);
+        }
+
+        .btn-signin:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Alert Messages */
+        .alert-box {
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            font-size: 0.86rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .alert-error {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #e11d48;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #15803d;
+        }
+
+        /* Card Footer */
+        .card-footer {
+            text-align: center;
+            margin-top: 1.75rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .register-link {
+            color: var(--coral-primary);
+            font-weight: 700;
+            text-decoration: none;
+            margin-left: 0.25rem;
+            transition: color 0.15s;
+        }
+
+        .register-link:hover {
+            color: var(--coral-hover);
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .split-layout {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+                max-width: 520px;
+            }
+
+            .left-branding {
+                text-align: center;
+                align-items: center;
+            }
+
+            .brand-header {
+                justify-content: center;
+            }
+
+            .supporting-text {
+                margin: 0.4rem auto 0;
+            }
+
+            .features-list {
+                align-items: flex-start;
+                margin: 0 auto;
+            }
+
+            .illustration-wrap {
+                display: none; /* Hide illustration on tablets/mobiles to focus on card */
+            }
+
+            .login-card {
+                padding: 2.25rem 1.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1.5rem 1rem;
+            }
+
+            .login-card {
+                padding: 1.75rem 1.25rem;
+                border-radius: 20px;
+            }
+
+            .welcome-title {
+                font-size: 1.6rem;
+            }
+
+            .main-heading {
+                font-size: 1.5rem;
+            }
+
+            .accent-heading {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Subtle Pastel Ambient Blobs -->
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+    <div class="bg-blob bg-blob-3"></div>
+    <div class="bg-dots bg-dots-left"></div>
+
+    <div class="split-layout">
+        <!-- LEFT SIDE: ExamGuard Identity & Features -->
+        <section class="left-branding">
+            <a href="/login" class="brand-header">
+                <div class="brand-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <div class="brand-text-block">
+                    <h1>Exam<span>Guard</span></h1>
+                    <p>Smart Examination Monitoring</p>
+                </div>
+            </a>
+
+            <div class="tagline-group">
+                <h2 class="main-heading">Secure. Fair. Transparent.</h2>
+                <h3 class="accent-heading">Your integrity, our commitment.</h3>
+                <p class="supporting-text">
+                    Access your examinations, monitor your progress and achieve with confidence.
+                </p>
+            </div>
+
+            <!-- 3 Compact Feature Highlights -->
+            <div class="features-list">
+                <div class="feature-item">
+                    <div class="feature-icon-box shield">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <div class="feature-info">
+                        <h4>Secure Access</h4>
+                        <p>Your data is encrypted and protected</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon-box chart">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                    </div>
+                    <div class="feature-info">
+                        <h4>Real-time Monitoring</h4>
+                        <p>AI-powered proctoring for fair exams</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon-box clipboard">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                            <polyline points="9 14 11 16 15 11"></polyline>
+                        </svg>
+                    </div>
+                    <div class="feature-info">
+                        <h4>Trusted Platform</h4>
+                        <p>Built for academic excellence</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasteful Student Exam Illustration -->
+            <div class="illustration-wrap">
+                <img src="/frontend/static/assets/student_login_illustration.jpg" alt="Student taking online examination on laptop" class="illustration-img">
+            </div>
+        </section>
+
+        <!-- RIGHT SIDE: Elevated White Login Card -->
+        <main class="login-card">
+            <div class="card-header-block">
+                <h2 class="welcome-title">Welcome Back!</h2>
+                <p class="welcome-subtitle">Sign in to your ExamGuard account</p>
+            </div>
+
+            <div id="alert-box" class="alert-box" style="display: none;"></div>
+
+            <form id="login-form" onsubmit="handleLogin(event)" novalidate>
+                <div class="form-stack">
+                    <!-- Field 1: Email Address or Username -->
+                    <div class="field-group">
+                        <label class="field-label" for="identity">
+                            Email Address or Username <span class="req">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </span>
+                            <input type="text" id="identity" class="form-control" placeholder="Enter your email or username" required autocomplete="username">
+                        </div>
+                    </div>
+
+                    <!-- Field 2: Password -->
+                    <div class="field-group">
+                        <label class="field-label" for="password">
+                            Password <span class="req">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                            </span>
+                            <input type="password" id="password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
+                            <button type="button" class="toggle-pwd-btn" onclick="togglePasswordVisibility()" title="Toggle password visibility" aria-label="Toggle password visibility">
+                                <svg id="pwd-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember me & Forgot Password -->
+                    <div class="options-row">
+                        <label class="remember-label">
+                            <input type="checkbox" id="remember-me">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="javascript:void(0)" onclick="handleForgotPassword()" class="forgot-link">Forgot Password?</a>
+                    </div>
+
+                    <!-- Primary Action Button -->
+                    <button type="submit" id="btn-submit" class="btn-signin">
+                        <span id="btn-text">→ Sign In</span>
+                        <span id="btn-spinner" class="spinner" style="display: none;"></span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="card-footer">
+                Don't have a profile yet? <a href="/register" class="register-link">Register here</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Check if redirected from registration
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("registered") === "1") {
+            showAlert("Account created successfully! Please sign in with your credentials.", "success");
+        }
+
+        // Restore remembered identity if saved
+        try {
+            const savedIdentity = localStorage.getItem("examguard_saved_identity");
+            if (savedIdentity) {
+                document.getElementById("identity").value = savedIdentity;
+                document.getElementById("remember-me").checked = true;
+            }
+        } catch (e) {}
+
+        // Check if already authenticated
+        fetch("/api/auth/me", { credentials: "include" })
+            .then(res => res.json())
+            .then(data => {
+                if (data.authenticated) {
+                    window.location.href = "/dashboard";
+                }
+            })
+            .catch(() => {});
+
+        // Password visibility toggle
+        let isPwdVisible = false;
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById("password");
+            const icon = document.getElementById("pwd-icon");
+            isPwdVisible = !isPwdVisible;
+
+            if (isPwdVisible) {
+                pwdInput.type = "text";
+                icon.innerHTML = `
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                `;
+            } else {
+                pwdInput.type = "password";
+                icon.innerHTML = `
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                `;
+            }
+        }
+
+        function handleForgotPassword() {
+            showAlert("For security and integrity reasons, password resets must be requested through your proctoring administrator or institution support.", "error");
+        }
+
+        function showAlert(msg, type = "error") {
+            const el = document.getElementById("alert-box");
+            el.className = `alert-box alert-${type}`;
+            el.innerHTML = `
+                <span>${type === 'error' ? '⚠️' : '✅'}</span>
+                <span>${msg}</span>
+            `;
+            el.style.display = "flex";
+        }
+
+        function hideAlert() {
+            const el = document.getElementById("alert-box");
+            el.style.display = "none";
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            hideAlert();
+
+            const identity = document.getElementById("identity").value.trim();
+            const password = document.getElementById("password").value;
+            const rememberMe = document.getElementById("remember-me").checked;
+
+            if (!identity || !password) {
+                showAlert("Please enter both your email/username and password.");
+                return;
+            }
+
+            // Save or clear remembered identity
+            try {
+                if (rememberMe) {
+                    localStorage.setItem("examguard_saved_identity", identity);
+                } else {
+                    localStorage.removeItem("examguard_saved_identity");
+                }
+            } catch (e) {}
+
+            const btn = document.getElementById("btn-submit");
+            const btnText = document.getElementById("btn-text");
+            const btnSpinner = document.getElementById("btn-spinner");
+
+            btn.disabled = true;
+            btnText.textContent = "Authenticating...";
+            btnSpinner.style.display = "inline-block";
+
+            try {
+                const response = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: identity,
+                        password: password
+                    }),
+                    credentials: "include"
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert("Authentication successful! Loading dashboard...", "success");
+                    setTimeout(() => {
+                        window.location.href = "/dashboard";
+                    }, 500);
+                } else {
+                    showAlert(data.error || "Invalid credentials. Please verify your email and password.", "error");
+                    btn.disabled = false;
+                    btnText.textContent = "→ Sign In";
+                    btnSpinner.style.display = "none";
+                }
+            } catch (err) {
+                showAlert("Network connection error. Please verify the server is running.", "error");
+                btn.disabled = false;
+                btnText.textContent = "→ Sign In";
+                btnSpinner.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

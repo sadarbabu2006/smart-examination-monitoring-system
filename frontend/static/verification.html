@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identity & Face Verification - Smart Examination Monitoring</title>
+    <link rel="stylesheet" href="/frontend/static/styles.css">
+    <style>
+        .verification-container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .camera-viewport {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            background: #000;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #webcam-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Mirror view for natural candidate perspective */
+        }
+
+        .face-target-guide {
+            position: absolute;
+            width: 200px;
+            height: 250px;
+            border: 2px dashed rgba(255, 255, 255, 0.4);
+            border-radius: 50% 50% 45% 45%;
+            pointer-events: none;
+            transition: all var(--transition-normal);
+        }
+
+        .face-target-guide.detected {
+            border-color: #10b981;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+        }
+
+        .face-target-guide.warning {
+            border-color: #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
+        }
+
+        .status-pill {
+            position: absolute;
+            bottom: 12px;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            padding: 0.4rem 1rem;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .step-progress-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-pill {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 0.75rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .step-pill.completed {
+            border-color: var(--success);
+            color: #34d399;
+            background: var(--success-light);
+        }
+
+        .step-pill.current {
+            border-color: var(--primary);
+            color: #60a5fa;
+            background: var(--primary-light);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <header class="exam-navbar">
+        <a href="/dashboard" class="brand-logo">
+            <div class="brand-icon">EG</div>
+            <div>
+                <div class="brand-title">ExamGuard</div>
+                <div class="brand-subtitle">Smart Examination Monitoring</div>
+            </div>
+        </a>
+        <div>
+            <span class="badge badge-warning" id="status-badge"><span class="pulse-dot"></span> Pre-Exam Verification</span>
+        </div>
+    </header>
+
+    <main class="page-container verification-container">
+        <div class="card">
+            <div class="card-header" style="text-align: center;">
+                <h1 class="card-title">Camera & Biometric Verification</h1>
+                <p class="card-desc">Position your face inside the target frame to confirm camera visibility before entering the exam.</p>
+            </div>
+
+            <div class="step-progress-row">
+                <div class="step-pill completed">1. System Rules Accepted</div>
+                <div class="step-pill current" id="step-cam">2. Camera & Face Check</div>
+                <div class="step-pill" id="step-ready">3. Enter Examination</div>
+            </div>
+
+            <div id="alert-box" style="display: none;"></div>
+
+            <!-- Video Frame & Target Box -->
+            <div class="camera-viewport">
+                <video id="webcam-video" autoplay playsinline muted></video>
+                <div class="face-target-guide" id="target-guide"></div>
+                <div class="status-pill" id="status-pill">
+                    <span class="pulse-dot" id="status-dot"></span>
+                    <span id="status-text">Requesting Camera Access...</span>
+                </div>
+            </div>
+
+            <!-- Hidden canvas for capturing validation snapshots -->
+            <canvas id="snapshot-canvas" width="480" height="360" style="display: none;"></canvas>
+
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.45;">
+                <strong>Verification Tips:</strong> Ensure adequate room lighting, look directly into the camera, and remove hats, sunglasses, or face coverings. Avoid having other people visible in the background.
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <a href="/dashboard" class="btn btn-secondary">Cancel & Exit</a>
+                <button id="btn-start-exam" class="btn btn-success" onclick="startExaminationSession()" disabled>
+                    <span>Proceed to Examination Room →</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get("session_id");
+
+        if (!sessionId) {
+            alert("No examination session provided.");
+            window.location.href = "/dashboard";
+        }
+
+        let mediaStream = null;
+        let verificationInterval = null;
+        let isVerified = false;
+        let consecutivePasses = 0;
+
+        const video = document.getElementById("webcam-video");
+        const canvas = document.getElementById("snapshot-canvas");
+        const statusText = document.getElementById("status-text");
+        const statusPill = document.getElementById("status-pill");
+        const statusDot = document.getElementById("status-dot");
+        const targetGuide = document.getElementById("target-guide");
+        const btnStart = document.getElementById("btn-start-exam");
+
+        window.addEventListener("DOMContentLoaded", () => {
+            initCamera();
+        });
+
+        window.addEventListener("beforeunload", () => {
+            stopCamera();
+        });
+
+        async function initCamera() {
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 640 }, height: { ideal: 480 } },
+                    audio: false
+                });
+
+                video.srcObject = mediaStream;
+                video.onloadedmetadata = () => {
+                    statusText.textContent = "Camera Connected. Detecting face...";
+                    statusPill.style.color = "#60a5fa";
+                    // Start automated Haar Cascade verification loop
+                    startVerificationLoop();
+                };
+            } catch (err) {
+                console.error("Camera permission error:", err);
+                statusText.textContent = "Camera Unavailable or Permission Denied";
+                statusPill.style.color = "#ef4444";
+                statusDot.style.background = "#ef4444";
+                showAlert("Webcam permission is required to take this examination. Please allow camera access in your browser and reload.", "error");
+            }
+        }
+
+        function stopCamera() {
+            if (verificationInterval) {
+                clearInterval(verificationInterval);
+            }
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(t => t.stop());
+            }
+        }
+
+        function startVerificationLoop() {
+            if (verificationInterval) clearInterval(verificationInterval);
+            verificationInterval = setInterval(checkFacePresence, 1200);
+        }
+
+        async function checkFacePresence() {
+            if (!video.videoWidth || !video.videoHeight || isVerified) return;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const frameB64 = canvas.toDataURL("image/jpeg", 0.75);
+
+            try {
+                const res = await fetch("/api/monitoring/verify-frame", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ frame: frameB64 }),
+                    credentials: "include"
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    statusText.textContent = "Backend verification unavailable";
+                    return;
+                }
+
+                if (data.status === "face_detected") {
+                    consecutivePasses++;
+                    targetGuide.className = "face-target-guide detected";
+                    statusPill.style.color = "#34d399";
+                    statusDot.style.background = "#34d399";
+                    statusText.textContent = `Face Verified (${consecutivePasses}/2)`;
+
+                    if (consecutivePasses >= 2) {
+                        isVerified = true;
+                        clearInterval(verificationInterval);
+                        statusText.textContent = "Verification Successful! You may enter.";
+                        btnStart.disabled = false;
+                        document.getElementById("step-cam").className = "step-pill completed";
+                        document.getElementById("step-ready").className = "step-pill current";
+                    }
+                } else if (data.status === "multiple_faces") {
+                    consecutivePasses = 0;
+                    targetGuide.className = "face-target-guide warning";
+                    statusPill.style.color = "#ef4444";
+                    statusDot.style.background = "#ef4444";
+                    statusText.textContent = `Multiple Faces Detected (${data.face_count}). Only 1 candidate permitted.`;
+                } else {
+                    consecutivePasses = 0;
+                    targetGuide.className = "face-target-guide";
+                    statusPill.style.color = "#fbbf24";
+                    statusDot.style.background = "#fbbf24";
+                    statusText.textContent = "Searching for face... Position face in center.";
+                }
+            } catch (err) {
+                console.error("Verification ping error:", err);
+            }
+        }
+
+        async function startExaminationSession() {
+            btnStart.disabled = true;
+            btnStart.textContent = "Launching Examination Room...";
+
+            try {
+                // Transition session to active state (if currently scheduled)
+                await fetch(`/api/exam-sessions/${sessionId}/start`, {
+                    method: "POST",
+                    credentials: "include"
+                });
+            } catch (err) {
+                // If already active, continue
+            }
+
+            stopCamera();
+            window.location.href = `/exam?session_id=${sessionId}`;
+        }
+
+        function showAlert(msg, type = "error") {
+            const el = document.getElementById("alert-box");
+            el.className = `alert alert-${type}`;
+            el.textContent = msg;
+            el.style.display = "block";
+        }
+    </script>
+</body>
+</html>

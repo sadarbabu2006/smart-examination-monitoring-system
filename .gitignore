@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# Environment Variables
+.env
+.env.local
+
+# Database
+database/*.db
+database/*.sqlite3
+*.db-journal
+
+# Evidence & Data Files
+data/screenshots/*.jpg
+data/screenshots/*.png
+data/exports/*.csv
+data/exports/*.json
+
+# Streamlit
+.streamlit/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/

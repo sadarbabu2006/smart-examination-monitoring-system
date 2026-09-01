@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Examination Instructions - Smart Examination Monitoring</title>
+    <link rel="stylesheet" href="/frontend/static/styles.css">
+    <style>
+        .instruction-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.1rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 0.85rem;
+        }
+
+        .instruction-icon {
+            font-size: 1.4rem;
+            min-width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #60a5fa;
+        }
+
+        .instruction-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .instruction-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.45;
+        }
+    </style>
+</head>
+<body>
+    <header class="exam-navbar">
+        <a href="/dashboard" class="brand-logo">
+            <div class="brand-icon">EG</div>
+            <div>
+                <div class="brand-title">ExamGuard</div>
+                <div class="brand-subtitle">Smart Examination Monitoring</div>
+            </div>
+        </a>
+        <div>
+            <span class="badge badge-warning">Assessment Preparation</span>
+        </div>
+    </header>
+
+    <main class="page-container" style="max-width: 800px;">
+        <div class="card">
+            <div class="card-header">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                    <div>
+                        <h1 class="card-title" id="exam-identifier-title">Examination Guidelines & Code of Conduct</h1>
+                        <p class="card-desc">Review proctoring policies and system requirements before entering the examination.</p>
+                    </div>
+                    <span class="badge badge-blue" id="session-badge">Session Verification</span>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1.75rem;">
+                <div class="instruction-item">
+                    <div class="instruction-icon">📹</div>
+                    <div>
+                        <div class="instruction-title">Webcam Permission & Continuous Visibility</div>
+                        <div class="instruction-desc">You must grant camera permissions on the next screen and keep your face clearly visible within the camera frame at all times. Stepping away or covering the camera will log an absence period.</div>
+                    </div>
+                </div>
+
+                <div class="instruction-item">
+                    <div class="instruction-icon">💻</div>
+                    <div>
+                        <div class="instruction-title">Active Window & Tab Retention</div>
+                        <div class="instruction-desc">You must keep the examination tab focused. Switching to another browser tab, opening new windows, or minimizing the browser will be automatically flagged and recorded as a proctoring violation.</div>
+                    </div>
+                </div>
+
+                <div class="instruction-item">
+                    <div class="instruction-icon">👤</div>
+                    <div>
+                        <div class="instruction-title">Single Candidate Policy</div>
+                        <div class="instruction-desc">Only the authenticated candidate is allowed in the testing environment. Detection of multiple faces or unauthorized individuals in the camera feed will be recorded in the session integrity audit.</div>
+                    </div>
+                </div>
+
+                <div class="instruction-item">
+                    <div class="instruction-icon">🛡️</div>
+                    <div>
+                        <div class="instruction-title">Automated Integrity Analysis</div>
+                        <div class="instruction-desc">All telemetry signals are securely analyzed to generate an examination integrity report for review by proctoring authorities upon session completion.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: rgba(14, 21, 38, 0.7); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.75rem;">
+                <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+                    <input type="checkbox" id="agreement-check" style="width: 18px; height: 18px; accent-color: var(--primary);" onchange="toggleProceedBtn()">
+                    <span style="font-size: 0.875rem; color: #e2e8f0;">I have read, understood, and agree to adhere to all proctoring rules and monitoring guidelines.</span>
+                </label>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <a href="/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
+                <button id="btn-proceed" class="btn btn-primary" onclick="proceedToVerification()" disabled>Continue to Camera Verification →</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get("session_id");
+
+        if (!sessionId) {
+            alert("No examination session specified. Returning to dashboard.");
+            window.location.href = "/dashboard";
+        }
+
+        // Verify session ownership
+        fetch(`/api/exam-sessions/${sessionId}`, { credentials: "include" })
+            .then(res => {
+                if (!res.ok) throw new Error("Unauthorized or invalid session");
+                return res.json();
+            })
+            .then(data => {
+                document.getElementById("exam-identifier-title").textContent = `${data.session.exam_identifier} - Pre-Exam Guidelines`;
+                document.getElementById("session-badge").textContent = `Session #${data.session.id}`;
+            })
+            .catch(err => {
+                alert("You do not have permission to access this examination session.");
+                window.location.href = "/dashboard";
+            });
+
+        function toggleProceedBtn() {
+            const check = document.getElementById("agreement-check");
+            document.getElementById("btn-proceed").disabled = !check.checked;
+        }
+
+        function proceedToVerification() {
+            window.location.href = `/face-verification?session_id=${sessionId}`;
+        }
+    </script>
+</body>
+</html>

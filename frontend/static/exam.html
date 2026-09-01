@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examination in Progress - Smart Examination Monitoring</title>
+    <link rel="stylesheet" href="/frontend/static/styles.css">
+    <style>
+        .exam-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 1.5rem;
+            flex: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .exam-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .exam-workspace {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            min-height: 520px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .workspace-empty-state {
+            margin: auto;
+            text-align: center;
+            max-width: 520px;
+        }
+
+        .empty-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.85;
+        }
+
+        .empty-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-desc {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .sidebar-camera-box {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            background: #000;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        #exam-webcam {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        .sidebar-cam-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            padding: 0.2rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .sidebar-meta-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        .sidebar-meta-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Examination Bar -->
+    <header class="exam-navbar">
+        <div class="brand-logo">
+            <div class="brand-icon">EG</div>
+            <div>
+                <div class="brand-title" id="exam-title-text">Examination Session</div>
+                <div class="brand-subtitle" id="candidate-name-text">Loading candidate...</div>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <span class="badge badge-active" id="monitoring-status-badge">
+                <span class="pulse-dot"></span> Proctoring Active
+            </span>
+            <span class="badge badge-warning" id="timer-display">⏱ 60:00</span>
+            <button class="btn btn-danger" onclick="confirmSubmit()" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+                Finish & Submit
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Examination Layout -->
+    <main class="page-container" style="max-width: 1360px;">
+        <div class="exam-layout">
+            <!-- Main Content Area: Shell without questions -->
+            <section class="exam-workspace">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 2rem;">
+                    <div>
+                        <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary);">Examination Workspace</h2>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Proctored environment is active and recording telemetry.</span>
+                    </div>
+                    <span class="badge badge-blue" id="session-tag">Session Active</span>
+                </div>
+
+                <div class="workspace-empty-state">
+                    <div class="empty-icon">📄</div>
+                    <h3 class="empty-title">Examination Content Area</h3>
+                    <p class="empty-desc">
+                        This is the proctored candidate examination shell. The question paper module will load questions here once published by the examination authority.
+                    </p>
+                    <div style="margin-top: 1.5rem; display: inline-flex; align-items: center; gap: 0.5rem; background: var(--bg-surface); padding: 0.6rem 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-size: 0.85rem; color: #94a3b8;">
+                        <span>🔒 Session Security Active</span>
+                        <span>•</span>
+                        <span>Tab & Focus Tracking Enabled</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sidebar: Live Proctoring & Verification Stream -->
+            <aside style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <!-- Live Video Feed -->
+                <div class="card" style="padding: 1.25rem;">
+                    <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-primary);">Proctoring Video Stream</h3>
+                    <div class="sidebar-camera-box">
+                        <video id="exam-webcam" autoplay playsinline muted></video>
+                        <div class="sidebar-cam-badge">● LIVE FEED</div>
+                    </div>
+                    <!-- Hidden canvas for OpenCV frame analysis -->
+                    <canvas id="cv-canvas" width="320" height="240" style="display: none;"></canvas>
+
+                    <div class="sidebar-meta-list">
+                        <div class="sidebar-meta-item">
+                            <span style="color: var(--text-muted);">Face Detection:</span>
+                            <span id="stat-face-presence" class="badge badge-active">Present</span>
+                        </div>
+                        <div class="sidebar-meta-item">
+                            <span style="color: var(--text-muted);">Camera Stream:</span>
+                            <span class="badge badge-active">Active</span>
+                        </div>
+                        <div class="sidebar-meta-item">
+                            <span style="color: var(--text-muted);">Session Security:</span>
+                            <span class="badge badge-active">Encrypted</span>
+                        </div>
+                        <div class="sidebar-meta-item">
+                            <span style="color: var(--text-muted);">Backend Telemetry:</span>
+                            <span id="telemetry-stat" class="badge badge-blue">Connected</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guidance Reminder -->
+                <div class="card" style="padding: 1.25rem; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; background: rgba(17, 24, 39, 0.6);">
+                    <strong style="color: #93c5fd; display: block; margin-bottom: 0.35rem;">⚠️ Active Proctoring Notice:</strong>
+                    Do not leave or blur this window. Tab switches, window defocusing, and face absence are tracked in real-time.
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Submission Confirmation Modal -->
+    <div id="submit-modal" class="modal-overlay" style="display: none;">
+        <div class="card" style="max-width: 440px; width: 100%;">
+            <div class="card-header">
+                <h3 class="card-title">Submit Examination?</h3>
+                <p class="card-desc">Once submitted, your session will conclude and monitoring will be terminated.</p>
+            </div>
+            <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Are you sure you want to finish your examination session now?
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <button class="btn btn-secondary" onclick="closeSubmitModal()">Return to Exam</button>
+                <button class="btn btn-danger" id="btn-confirm-submit" onclick="executeSubmit()">Yes, Finish & Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/frontend/static/proctoring_client.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = parseInt(urlParams.get("session_id"), 10);
+
+        if (!sessionId) {
+            alert("No active examination session found.");
+            window.location.href = "/dashboard";
+        }
+
+        let mediaStream = null;
+        let proctorClient = null;
+        let frameMonitoringInterval = null;
+        let candidateData = null;
+
+        const webcam = document.getElementById("exam-webcam");
+        const canvas = document.getElementById("cv-canvas");
+        const faceBadge = document.getElementById("stat-face-presence");
+
+        window.addEventListener("DOMContentLoaded", () => {
+            initializeExamSession();
+        });
+
+        window.addEventListener("beforeunload", () => {
+            cleanupMonitoring();
+        });
+
+        async function initializeExamSession() {
+            try {
+                // 1. Verify candidate authentication
+                const authRes = await fetch("/api/auth/me", { credentials: "include" });
+                const authData = await authRes.json();
+                if (!authData.authenticated || !authData.candidate) {
+                    window.location.href = "/login";
+                    return;
+                }
+                candidateData = authData.candidate;
+                document.getElementById("candidate-name-text").textContent = candidateData.full_name;
+
+                // 2. Fetch session details and ensure it is active
+                const sessionRes = await fetch(`/api/exam-sessions/${sessionId}`, { credentials: "include" });
+                if (!sessionRes.ok) {
+                    alert("Unauthorized or invalid exam session.");
+                    window.location.href = "/dashboard";
+                    return;
+                }
+                const sessionData = await sessionRes.json();
+                const session = sessionData.session;
+
+                if (session.status === "submitted") {
+                    alert("This examination session has already been completed and submitted.");
+                    window.location.href = "/dashboard";
+                    return;
+                }
+
+                document.getElementById("exam-title-text").textContent = session.exam_identifier;
+                document.getElementById("session-tag").textContent = `Session #${session.id} (${session.status})`;
+
+                // 3. Initialize Camera
+                await startCamera();
+
+                // 4. Initialize Automatic Proctoring Telemetry Client
+                startProctoringClient();
+
+                // 5. Start Background Haar Cascade Face Presence Loop
+                startFaceMonitoringLoop();
+
+                // 6. Start Exam Timer
+                startTimer();
+
+            } catch (err) {
+                console.error("Initialization error:", err);
+                alert("Failed to initialize proctoring environment.");
+            }
+        }
+
+        async function startCamera() {
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 640 }, height: { ideal: 480 } },
+                    audio: false
+                });
+                webcam.srcObject = mediaStream;
+            } catch (err) {
+                console.error("Camera access error:", err);
+                faceBadge.textContent = "Camera Error";
+                faceBadge.className = "badge badge-danger";
+            }
+        }
+
+        function startProctoringClient() {
+            proctorClient = new ProctoringClient(sessionId);
+            proctorClient.start();
+        }
+
+        function startFaceMonitoringLoop() {
+            // Evaluates face presence every 2.5 seconds via real backend Haar Cascade
+            frameMonitoringInterval = setInterval(async () => {
+                if (!webcam.videoWidth || !webcam.videoHeight) return;
+
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(webcam, 0, 0, canvas.width, canvas.height);
+                const frameB64 = canvas.toDataURL("image/jpeg", 0.7);
+
+                try {
+                    const res = await fetch("/api/monitoring/process-frame", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            session_id: sessionId,
+                            frame: frameB64
+                        }),
+                        credentials: "include"
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.is_present) {
+                            if (data.face_count > 1) {
+                                faceBadge.textContent = `Multiple Faces (${data.face_count})`;
+                                faceBadge.className = "badge badge-danger";
+                            } else {
+                                faceBadge.textContent = "Face Present";
+                                faceBadge.className = "badge badge-active";
+                            }
+                        } else {
+                            faceBadge.textContent = "Face Absent";
+                            faceBadge.className = "badge badge-warning";
+                        }
+                    }
+                } catch (err) {
+                    console.error("Frame monitoring ping error:", err);
+                }
+            }, 2500);
+        }
+
+        function cleanupMonitoring() {
+            if (proctorClient) {
+                proctorClient.stop();
+            }
+            if (frameMonitoringInterval) {
+                clearInterval(frameMonitoringInterval);
+            }
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(t => t.stop());
+            }
+        }
+
+        // Exam Session Timer
+        let timeRemainingSeconds = 60 * 60; // 60 minutes default
+        function startTimer() {
+            setInterval(() => {
+                if (timeRemainingSeconds > 0) {
+                    timeRemainingSeconds--;
+                    const mins = Math.floor(timeRemainingSeconds / 60);
+                    const secs = timeRemainingSeconds % 60;
+                    document.getElementById("timer-display").textContent = `⏱ ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        // Exam Submission
+        function confirmSubmit() {
+            document.getElementById("submit-modal").style.display = "flex";
+        }
+
+        function closeSubmitModal() {
+            document.getElementById("submit-modal").style.display = "none";
+        }
+
+        async function executeSubmit() {
+            const btn = document.getElementById("btn-confirm-submit");
+            btn.disabled = true;
+            btn.textContent = "Submitting Session...";
+
+            try {
+                const res = await fetch(`/api/exam-sessions/${sessionId}/submit`, {
+                    method: "POST",
+                    credentials: "include"
+                });
+
+                if (res.ok) {
+                    cleanupMonitoring();
+                    alert("Examination submitted successfully! Returning to dashboard.");
+                    window.location.href = "/dashboard";
+                } else {
+                    const data = await res.json();
+                    alert(data.error || "Failed to submit session.");
+                    btn.disabled = false;
+                    btn.textContent = "Yes, Finish & Submit";
+                }
+            } catch (err) {
+                alert("Network error submitting examination.");
+                btn.disabled = false;
+                btn.textContent = "Yes, Finish & Submit";
+            }
+        }
+    </script>
+</body>
+</html>

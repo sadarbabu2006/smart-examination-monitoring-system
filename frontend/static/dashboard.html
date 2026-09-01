@@ -1,0 +1,2235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Dashboard - ExamGuard Smart Examination Monitoring</title>
+    <style>
+        /* ==========================================================================
+           1. Design System & High-Visibility Border Tokens
+           ========================================================================== */
+        :root {
+            /* 6-Tier Unified Typography Scale */
+            --font-xs: 0.75rem;    /* 12px - Footnotes & micro-badges */
+            --font-sm: 0.875rem;   /* 14px - Body copy, labels, table cells */
+            --font-base: 1rem;     /* 16px - Base text, inputs, buttons */
+            --font-md: 1.125rem;   /* 18px - Subheadings, stat numbers */
+            --font-lg: 1.25rem;    /* 20px - Card & section headers (H2) */
+            --font-xl: 1.5rem;     /* 24px - Page main title (H1) */
+
+            /* High-Visibility Card Border & Separator Colors */
+            --border-card: #f1d6d2;      /* Distinct, visible peach-coral card border */
+            --border-subtle: #f8e4e1;    /* Subtle inner separators */
+            --bg-page: #faf5f2;          /* Light warm peach background */
+            --bg-card: #ffffff;          /* White elevated cards */
+            --bg-hover: #fff1f2;
+            
+            /* Text Tokens */
+            --text-dark: #0f172a;        /* Primary headings, titles, values */
+            --text-body: #334155;        /* Body copy, instructions */
+            --text-muted: #64748b;       /* Secondary descriptions, table headers */
+            --coral-primary: #f43f5e;    /* Brand accent, active states, key CTAs */
+            --coral-hover: #e11d48;      /* Button hover state */
+            --coral-light: #fff1f2;
+            --coral-border: #fecdd3;
+            --coral-shadow: rgba(244, 63, 94, 0.22);
+
+            --success-text: #047857;     /* Ready / active states */
+            --warning-text: #b45309;     /* Scheduled / pending states */
+            --info-text: #1d4ed8;        /* Submitted / historical states */
+            --danger-text: #dc2626;      /* Sign out / alerts */
+
+            --success-bg: #ecfdf5;
+            --success-border: #a7f3d0;
+            --warning-bg: #fffbeb;
+            --warning-border: #fde68a;
+            --info-bg: #eff6ff;
+            --info-border: #bfdbfe;
+            --failed-bg: #fef2f2;
+            --failed-border: #fecaca;
+            --neutral-bg: #f1f5f9;
+            --neutral-border: #cbd5e1;
+
+            /* Radii & Shadows */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-full: 9999px;
+
+            --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 8px 24px rgba(225, 112, 85, 0.06);
+            --shadow-btn: 0 6px 16px var(--coral-shadow);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            font-size: var(--font-sm);
+            line-height: 1.5;
+        }
+
+        /* ==========================================================================
+           2. Sidebar Layout
+           ========================================================================== */
+        .dashboard-sidebar {
+            width: 260px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-card);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 50;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            border-bottom: 1px solid var(--border-card);
+            text-decoration: none;
+        }
+
+        .brand-icon-box {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #fb7185 0%, var(--coral-primary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 6px 14px var(--coral-shadow);
+            flex-shrink: 0;
+        }
+
+        .brand-text-block h2 {
+            font-size: var(--font-lg);
+            font-weight: 800;
+            color: var(--text-dark);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-text-block h2 span {
+            color: var(--coral-primary);
+        }
+
+        .brand-text-block p {
+            font-size: var(--font-xs);
+            font-weight: 600;
+            color: var(--text-muted);
+            line-height: 1.3;
+            margin-top: 0.15rem;
+        }
+
+        .sidebar-nav {
+            padding: 1.25rem 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-link-item {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            font-size: var(--font-sm);
+            font-weight: 600;
+            color: var(--text-body);
+            text-decoration: none;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+
+        .nav-link-item:hover {
+            background: var(--bg-hover);
+            color: var(--coral-primary);
+        }
+
+        .nav-link-item.active {
+            background: var(--coral-light);
+            color: var(--coral-primary);
+            font-weight: 700;
+        }
+
+        .nav-link-item svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer {
+            padding: 1rem 0.85rem;
+            border-top: 1px solid var(--border-card);
+        }
+
+        .btn-danger-ghost {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            font-size: var(--font-sm);
+            font-weight: 600;
+            color: var(--danger-text);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-danger-ghost:hover {
+            background: #fef2f2;
+        }
+
+        /* ==========================================================================
+           3. Main Content & Header
+           ========================================================================== */
+        .main-wrapper {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            max-width: calc(100vw - 260px);
+        }
+
+        .top-navbar {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-card);
+            padding: 1.15rem 2.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .header-title-group h1 {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+        }
+
+        .header-title-group p {
+            font-size: var(--font-sm);
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+        }
+
+        .header-user-block {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-page);
+            border: 1px solid var(--border-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-body);
+            cursor: pointer;
+            position: relative;
+            transition: background 0.15s ease;
+        }
+
+        .btn-icon:hover {
+            background: #f1f5f9;
+        }
+
+        .notif-dot {
+            position: absolute;
+            top: 9px;
+            right: 9px;
+            width: 8px;
+            height: 8px;
+            background: var(--coral-primary);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        /* Top-Right Header User Profile Badge with Real Photo & Toggle */
+        .user-profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.3rem 0.85rem 0.3rem 0.4rem;
+            border-radius: var(--radius-full);
+            background: var(--bg-page);
+            border: 1px solid var(--border-card);
+            cursor: pointer;
+            transition: border-color 0.15s ease, background 0.15s ease;
+            user-select: none;
+        }
+
+        .user-profile-badge:hover {
+            border-color: var(--coral-primary);
+            background: var(--coral-light);
+        }
+
+        .user-avatar-small {
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #fed7aa;
+            border: 1.5px solid var(--coral-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #c2410c;
+            font-size: var(--font-xs);
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(244, 63, 94, 0.12);
+        }
+
+        .user-avatar-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .user-info-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .user-info-text strong {
+            font-size: var(--font-sm);
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .user-info-text span {
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .caret-icon {
+            color: var(--text-muted);
+            margin-left: 0.2rem;
+        }
+
+        /* ==========================================================================
+           4. Card Containers with Visible 1px Borders
+           ========================================================================== */
+        .content-container {
+            padding: 2rem 2.25rem 3.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .top-grid {
+            display: grid;
+            grid-template-columns: 1.35fr 1fr;
+            gap: 1.25rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 1.6rem 1.75rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-header-row h2 {
+            font-size: var(--font-lg);
+            font-weight: 800;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            letter-spacing: -0.01em;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #fb7185 0%, var(--coral-primary) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-base);
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-btn);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--coral-primary) 0%, var(--coral-hover) 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(244, 63, 94, 0.35);
+        }
+
+        .btn-secondary {
+            background: var(--bg-page);
+            border: 1.5px solid var(--border-card);
+            color: var(--text-body);
+            border-radius: var(--radius-md);
+            font-size: var(--font-sm);
+            font-weight: 600;
+            padding: 0.65rem 1.25rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.15s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--coral-primary);
+            color: var(--coral-primary);
+            background: var(--coral-light);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: var(--font-xs);
+            font-weight: 700;
+            user-select: none;
+        }
+
+        .badge-scheduled {
+            background: var(--warning-bg);
+            color: var(--warning-text);
+            border: 1px solid var(--warning-border);
+        }
+
+        .badge-active {
+            background: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid var(--success-border);
+        }
+
+        .badge-submitted {
+            background: var(--info-bg);
+            color: var(--info-text);
+            border: 1px solid var(--info-border);
+        }
+
+        .badge-testing {
+            background: var(--warning-bg);
+            color: var(--warning-text);
+            border: 1px solid var(--warning-border);
+        }
+
+        .badge-failed {
+            background: var(--failed-bg);
+            color: var(--danger-text);
+            border: 1px solid var(--failed-border);
+        }
+
+        .badge-neutral {
+            background: var(--neutral-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--neutral-border);
+        }
+
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.3); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Upcoming Exam Box */
+        .upcoming-content-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1;
+            gap: 1.25rem;
+        }
+
+        .upcoming-title-box h3 {
+            font-size: var(--font-lg);
+            font-weight: 800;
+            color: var(--text-dark);
+            line-height: 1.25;
+        }
+
+        .upcoming-title-box p {
+            font-size: var(--font-sm);
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .exam-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.85rem;
+            background: var(--bg-page);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-card);
+        }
+
+        .meta-pill-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .meta-pill-item span.lbl {
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        .meta-pill-item strong.val {
+            font-size: var(--font-sm);
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .upcoming-btn-row {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .empty-state-box {
+            text-align: center;
+            padding: 2.2rem 1rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .empty-state-box h3 {
+            color: var(--text-dark);
+            font-size: var(--font-base);
+            font-weight: 700;
+        }
+
+        /* ==========================================================================
+           5. Interactive System Check Card
+           ========================================================================== */
+        .system-check-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            flex: 1;
+        }
+
+        .readiness-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            background: var(--bg-page);
+            border: 1px solid var(--border-card);
+            transition: all 0.15s ease;
+        }
+
+        .readiness-item:hover {
+            border-color: var(--coral-border);
+            background: #fff8f8;
+        }
+
+        .readiness-info {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .readiness-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .readiness-title {
+            font-size: var(--font-sm);
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+
+        .readiness-desc {
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+        }
+
+        .btn-check-pill {
+            padding: 0.35rem 0.85rem;
+            border-radius: var(--radius-full);
+            font-size: var(--font-xs);
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid var(--border-card);
+            background: var(--bg-card);
+            color: var(--text-body);
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .btn-check-pill:hover {
+            border-color: var(--coral-primary);
+            color: var(--coral-primary);
+            background: var(--coral-light);
+        }
+
+        /* ==========================================================================
+           6. Statistics Row with Visible Borders
+           ========================================================================== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 1.3rem 1.4rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-lg);
+            flex-shrink: 0;
+        }
+
+        .stat-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-meta h3.stat-label {
+            font-size: var(--font-xs);
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .stat-meta .stat-number {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-top: 0.15rem;
+            line-height: 1.1;
+        }
+
+        /* ==========================================================================
+           7. Bottom Grid (Recent Exams + Instructions)
+           ========================================================================== */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1.45fr 1fr;
+            gap: 1.25rem;
+        }
+
+        .exams-table-wrap {
+            overflow-x: auto;
+            margin-top: 0.5rem;
+        }
+
+        table.exams-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: var(--font-sm);
+        }
+
+        table.exams-table th {
+            padding: 1rem 1.15rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: var(--font-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border-bottom: 1.5px solid var(--border-subtle);
+        }
+
+        table.exams-table td {
+            padding: 1.2rem 1.15rem;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-body);
+            vertical-align: middle;
+        }
+
+        table.exams-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        table.exams-table tbody tr:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .exam-title-cell {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .exam-title-cell small {
+            display: block;
+            font-size: var(--font-xs);
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        .btn-table-action {
+            padding: 0.45rem 0.95rem;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-xs);
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-action-start {
+            background: var(--coral-light);
+            color: var(--coral-primary);
+            border: 1px solid var(--coral-border);
+        }
+
+        .btn-action-start:hover {
+            background: var(--coral-primary);
+            color: white;
+        }
+
+        .btn-action-resume {
+            background: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid var(--success-border);
+        }
+
+        .btn-action-resume:hover {
+            background: var(--success-text);
+            color: white;
+        }
+
+        .btn-action-summary {
+            background: var(--info-bg);
+            color: var(--info-text);
+            border: 1px solid var(--info-border);
+        }
+
+        .btn-action-summary:hover {
+            background: var(--info-text);
+            color: white;
+        }
+
+        .instructions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .instruction-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: var(--font-sm);
+            color: var(--text-body);
+            line-height: 1.5;
+        }
+
+        .point-bullet {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--coral-light);
+            color: var(--coral-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-xs);
+            font-weight: 800;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+            border: 1px solid var(--coral-border);
+        }
+
+        /* ==========================================================================
+           8. Dedicated Instructions Page (Instructions Tab View)
+           ========================================================================== */
+        .instructions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        .instruction-guide-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 1.6rem 1.75rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .instruction-guide-card h3 {
+            font-size: var(--font-base);
+            font-weight: 800;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.85rem;
+            letter-spacing: -0.01em;
+        }
+
+        .guide-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .guide-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            font-size: var(--font-sm);
+            color: var(--text-body);
+            line-height: 1.45;
+        }
+
+        .guide-num {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--coral-light);
+            color: var(--coral-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-xs);
+            font-weight: 800;
+            flex-shrink: 0;
+            margin-top: 0.15rem;
+            border: 1px solid var(--coral-border);
+        }
+
+
+        .troubleshoot-box {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .troubleshoot-row {
+            padding: 0.7rem 0.85rem;
+            border-radius: var(--radius-md);
+            background: var(--bg-page);
+            border: 1px solid var(--border-card);
+        }
+
+        .troubleshoot-row strong {
+            display: block;
+            color: var(--text-dark);
+            font-size: var(--font-xs);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.2rem;
+        }
+
+        .troubleshoot-row p {
+            color: var(--text-body);
+            font-size: var(--font-xs);
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        /* ==========================================================================
+           9. Dedicated Profile Tab Page
+           ========================================================================== */
+        .profile-page-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 2.75rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .profile-photo-container {
+            width: 120px;
+            height: 120px;
+            min-width: 120px;
+            border-radius: 16px;
+            object-fit: cover;
+            background: #fed7aa;
+            border: 2px solid var(--coral-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.75rem;
+            color: #c2410c;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(244, 63, 94, 0.12);
+        }
+
+        .profile-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem 3.5rem;
+            flex: 1;
+        }
+
+        .profile-field-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .profile-field-row span.field-label {
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .profile-field-row strong.field-val {
+            font-size: var(--font-base);
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 1.5rem;
+        }
+
+        .modal-card {
+            background: white;
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 480px;
+            padding: 2rem;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-title {
+            font-size: var(--font-lg);
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 0.35rem;
+        }
+
+        .modal-subtitle {
+            font-size: var(--font-sm);
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-select {
+            width: 100%;
+            height: 48px;
+            border: 1.5px solid var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 0 1rem;
+            font-size: var(--font-sm);
+            color: var(--text-dark);
+            background: var(--bg-page);
+            outline: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-select:focus {
+            border-color: var(--coral-primary);
+            background: white;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        /* Mobile Hamburger */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1120px) {
+            .top-grid {
+                grid-template-columns: 1fr;
+            }
+            .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+            .instructions-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .profile-page-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-sidebar {
+                transform: translateX(-100%);
+            }
+            .dashboard-sidebar.open {
+                transform: translateX(0);
+            }
+            .main-wrapper {
+                margin-left: 0;
+                max-width: 100vw;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .content-container {
+                padding: 1.5rem 1.25rem;
+            }
+            .top-navbar {
+                padding: 1rem 1.25rem;
+            }
+            .profile-details-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .exam-meta-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Left Sidebar -->
+    <aside class="dashboard-sidebar" id="sidebar">
+        <a href="/dashboard" class="sidebar-brand" onclick="switchView('dashboard', event)">
+            <div class="brand-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+            </div>
+            <div class="brand-text-block">
+                <h2>Exam<span>Guard</span></h2>
+                <p>Smart Examination Monitoring</p>
+            </div>
+        </a>
+
+        <nav class="sidebar-nav">
+            <a href="#dashboard" id="nav-dashboard" class="nav-link-item active" onclick="switchView('dashboard', event)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="javascript:void(0)" class="nav-link-item" onclick="alert('Graded results will appear here after examination submission and proctoring audit.')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span>Results</span>
+            </a>
+
+            <!-- Dedicated Instructions Sidebar Tab -->
+            <a href="#instructions" id="nav-instructions" class="nav-link-item" onclick="switchView('instructions', event)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>Instructions</span>
+            </a>
+
+            <a href="#profile" id="nav-profile" class="nav-link-item" onclick="switchView('profile', event)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Profile</span>
+            </a>
+
+            <a href="javascript:void(0)" class="nav-link-item" onclick="alert('Examination environment settings are managed by your institution.')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <span>Settings</span>
+            </a>
+
+            <a href="javascript:void(0)" class="nav-link-item" onclick="alert('ExamGuard Support: contact your institution proctor or administrator.')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <span>Support</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn-danger-ghost" onclick="handleLogout()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+        <!-- Top Navbar -->
+        <header class="top-navbar">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle navigation">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="header-title-group">
+                    <h1 id="welcome-heading">Welcome back 👋</h1>
+                    <p id="welcome-subtext">Here's what's happening with your examinations.</p>
+                </div>
+            </div>
+
+            <div class="header-user-block">
+                <button class="btn-secondary" id="btn-top-schedule" onclick="openScheduleModal()" title="Schedule a new assessment session">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>Schedule Exam</span>
+                </button>
+
+                <button class="btn-icon" title="Notifications" onclick="alert('No new proctoring notifications.')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notif-dot"></span>
+                </button>
+
+                <!-- Top-Right Real Candidate Registration Photo & Toggle -->
+                <div class="user-profile-badge" onclick="toggleProfileView(event)" title="Toggle Candidate Profile">
+                    <div class="user-avatar-small" id="header-avatar-box">
+                        <img id="header-avatar-img" src="/api/auth/photo" alt="Candidate Photo" onerror="handleHeaderAvatarError()">
+                        <span id="header-avatar-initials" style="display: none;">👤</span>
+                    </div>
+                    <div class="user-info-text">
+                        <strong id="header-candidate-name">Loading...</strong>
+                        <span>Candidate</span>
+                    </div>
+                    <svg class="caret-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+        </header>
+
+        <!-- VIEW 1: Main Dashboard Container -->
+        <main class="content-container" id="dashboard-view">
+            <!-- Top Grid: Upcoming Exam + Interactive System Check -->
+            <div class="top-grid">
+                <!-- Upcoming Exam Card -->
+                <div class="card" id="upcoming-exam-card">
+                    <div class="card-header-row">
+                        <h2>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--coral-primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            Upcoming Examination
+                        </h2>
+                        <span id="upcoming-status-badge" class="status-badge badge-scheduled">Scheduled</span>
+                    </div>
+
+                    <div id="upcoming-body" class="upcoming-content-box">
+                        <div class="empty-state-box">
+                            <span class="pulse-dot" style="background: var(--coral-primary);"></span>
+                            <h3>Loading examination roster...</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive System Check Card -->
+                <div class="card" id="system-check-card">
+                    <div class="card-header-row" style="margin-bottom: 0.35rem;">
+                        <h2>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--coral-primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                            System Check
+                        </h2>
+                        <span id="overall-system-status" class="status-badge badge-neutral" style="cursor: default;">
+                            Run System Check
+                        </span>
+                    </div>
+                    <p style="font-size: var(--font-xs); color: var(--text-muted); margin-bottom: 1.15rem;">
+                        Verify your device is ready before starting an examination.
+                    </p>
+
+                    <div class="system-check-list">
+                        <!-- 1. Camera Access -->
+                        <div class="readiness-item" id="row-check-camera">
+                            <div class="readiness-info">
+                                <div class="readiness-icon" style="background: #ffe4e6; color: #f43f5e;">📹</div>
+                                <div>
+                                    <div class="readiness-title">Camera Access</div>
+                                    <div class="readiness-desc">Webcam permissions & live feed test</div>
+                                </div>
+                            </div>
+                            <div id="action-box-camera">
+                                <button type="button" class="btn-check-pill" onclick="runCameraCheck()">Test</button>
+                            </div>
+                        </div>
+
+                        <!-- 2. Browser Compatibility -->
+                        <div class="readiness-item" id="row-check-browser">
+                            <div class="readiness-info">
+                                <div class="readiness-icon" style="background: #eff6ff; color: #2563eb;">🌐</div>
+                                <div>
+                                    <div class="readiness-title">Browser Compatibility</div>
+                                    <div class="readiness-desc">Web APIs, tab monitoring & focus detection</div>
+                                </div>
+                            </div>
+                            <div id="action-box-browser">
+                                <button type="button" class="btn-check-pill" onclick="runBrowserCheck()">Test</button>
+                            </div>
+                        </div>
+
+                        <!-- 3. Internet Connection -->
+                        <div class="readiness-item" id="row-check-net">
+                            <div class="readiness-info">
+                                <div class="readiness-icon" style="background: #ecfdf5; color: #059669;">⚡</div>
+                                <div>
+                                    <div class="readiness-title">Internet Connection</div>
+                                    <div class="readiness-desc">Backend server connectivity & latency</div>
+                                </div>
+                            </div>
+                            <div id="action-box-net">
+                                <button type="button" class="btn-check-pill" onclick="runNetworkCheck()">Test</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Run All Checks Button -->
+                    <div style="margin-top: 1.15rem;">
+                        <button type="button" class="btn-secondary" id="btn-run-all-checks" onclick="runAllSystemChecks()" style="width: 100%; justify-content: center; padding: 0.75rem 1rem; font-weight: 700;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="23 4 23 10 17 10"></polyline>
+                                <polyline points="1 20 1 14 7 14"></polyline>
+                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                            </svg>
+                            <span>Run All Checks</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row of 4 Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper" style="background: #fffbeb; color: #d97706;">📝</div>
+                    <div class="stat-meta">
+                        <h3 class="stat-label">Upcoming Exams</h3>
+                        <div class="stat-number" id="stat-upcoming">0</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper" style="background: #ecfdf5; color: #059669;">⚡</div>
+                    <div class="stat-meta">
+                        <h3 class="stat-label">Active Exams</h3>
+                        <div class="stat-number" id="stat-active">0</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper" style="background: #eff6ff; color: #2563eb;">✅</div>
+                    <div class="stat-meta">
+                        <h3 class="stat-label">Completed Exams</h3>
+                        <div class="stat-number" id="stat-completed">0</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper" style="background: #fce7f3; color: #db2777;">📊</div>
+                    <div class="stat-meta">
+                        <h3 class="stat-label">Average Score</h3>
+                        <div class="stat-number">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Grid: Recent Examinations & Important Instructions -->
+            <div class="bottom-grid">
+                <!-- Recent Examinations Card -->
+                <div class="card" id="recent-exams-section">
+                    <div class="card-header-row">
+                        <h2>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--coral-primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            Recent Examinations
+                        </h2>
+                        <span class="status-badge badge-submitted">Session History</span>
+                    </div>
+
+                    <div class="exams-table-wrap">
+                        <table class="exams-table">
+                            <thead>
+                                <tr>
+                                    <th>Exam Name</th>
+                                    <th>Session</th>
+                                    <th>Duration</th>
+                                    <th>Score</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="exams-table-body">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted);">
+                                        Loading candidate records...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Important Instructions Card -->
+                <div class="card" id="instructions-card">
+                    <div class="card-header-row">
+                        <h2>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--coral-primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            Important Instructions
+                        </h2>
+                        <button class="btn-secondary" style="padding: 0.35rem 0.75rem; font-size: var(--font-xs);" onclick="switchView('instructions', event)">
+                            View All →
+                        </button>
+                    </div>
+
+                    <div class="instructions-list">
+                        <div class="instruction-point">
+                            <div class="point-bullet">1</div>
+                            <div>Keep your face clearly visible to the webcam throughout the examination session.</div>
+                        </div>
+                        <div class="instruction-point">
+                            <div class="point-bullet">2</div>
+                            <div>Do not switch browser tabs or minimize the testing window during active monitoring.</div>
+                        </div>
+                        <div class="instruction-point">
+                            <div class="point-bullet">3</div>
+                            <div>Do not leave the camera frame; absence intervals are automatically audited.</div>
+                        </div>
+                        <div class="instruction-point">
+                            <div class="point-bullet">4</div>
+                            <div>Ensure a well-lit, quiet room with a stable high-speed internet connection.</div>
+                        </div>
+                        <div class="instruction-point">
+                            <div class="point-bullet">5</div>
+                            <div>Follow all examination rules and academic integrity guidelines.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- VIEW 2: Dedicated Instructions View -->
+        <main class="content-container" id="instructions-view" style="display: none;">
+            <!-- 2-Column Instructions Matrix -->
+            <div class="instructions-grid">
+                <!-- 1. Before You Begin -->
+                <div class="instruction-guide-card">
+                    <h3>
+                        <span style="color: var(--coral-primary);">1.</span>
+                        Before You Begin
+                    </h3>
+                    <div class="guide-list">
+                        <div class="guide-item">
+                            <div class="guide-num">1</div>
+                            <div>Make sure your candidate information is correct.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">2</div>
+                            <div>Use a supported desktop or laptop browser.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">3</div>
+                            <div>Ensure your internet connection is stable.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">4</div>
+                            <div>Make sure your device has sufficient battery or is connected to power.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">5</div>
+                            <div>Choose a quiet and well-lit environment.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">6</div>
+                            <div>Make sure your face remains clearly visible to the webcam.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">7</div>
+                            <div>Close unnecessary applications, browser tabs, downloads, and notifications.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">8</div>
+                            <div>Complete the system check before starting the examination.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. During the Examination -->
+                <div class="instruction-guide-card">
+                    <h3>
+                        <span style="color: var(--coral-primary);">2.</span>
+                        During the Examination
+                    </h3>
+                    <div class="guide-list">
+                        <div class="guide-item">
+                            <div class="guide-num">1</div>
+                            <div>Remain present in front of the webcam throughout the examination.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">2</div>
+                            <div>Do not switch browser tabs or windows unnecessarily.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">3</div>
+                            <div>Do not minimize the examination window.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">4</div>
+                            <div>Do not leave the examination environment without authorization.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">5</div>
+                            <div>Follow all examination rules and academic integrity requirements.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">6</div>
+                            <div>Answer the examination independently.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">7</div>
+                            <div>Do not use unauthorized external resources or assistance.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">8</div>
+                            <div>Keep the examination window open until the examination is submitted.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Camera & System Requirements -->
+                <div class="instruction-guide-card">
+                    <h3>
+                        <span style="color: var(--coral-primary);">3.</span>
+                        Camera & System Requirements
+                    </h3>
+                    <div class="guide-list">
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Camera access is required for monitored examinations.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Allow camera permission when requested by the browser.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Use a supported modern browser.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Maintain a stable internet connection.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Complete the System Check before starting the examination.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Resolve any failed system check before beginning.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Academic Integrity -->
+                <div class="instruction-guide-card">
+                    <h3>
+                        <span style="color: var(--coral-primary);">4.</span>
+                        Academic Integrity
+                    </h3>
+                    <div class="guide-list">
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Complete the examination honestly and independently.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Do not use unauthorized notes, websites, applications, devices, or assistance.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Do not communicate with other people during the examination.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Do not attempt to bypass or interfere with examination monitoring.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Suspicious activity may be recorded and reviewed according to the applicable examination rules.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Follow any additional rules provided by the examination administrator or institution.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Submitting Your Examination -->
+                <div class="instruction-guide-card">
+                    <h3>
+                        <span style="color: var(--coral-primary);">5.</span>
+                        Submitting Your Examination
+                    </h3>
+                    <div class="guide-list">
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Review your answers before submitting when time permits.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Use the official Submit/Finish action provided by the examination interface.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Do not close the browser before submission is confirmed.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>Wait for confirmation that the examination has been successfully submitted.</div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-num">•</div>
+                            <div>If a technical problem occurs, follow the designated support procedure.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Technical Issues & Troubleshooting -->
+                <div class="instruction-guide-card">
+                    <h3>
+                        <span style="color: var(--coral-primary);">6.</span>
+                        Technical Issues & Troubleshooting
+                    </h3>
+                    <div class="troubleshoot-box">
+                        <div class="troubleshoot-row">
+                            <strong>Camera not working:</strong>
+                            <p>Check browser camera permissions and make sure the camera is available.</p>
+                        </div>
+                        <div class="troubleshoot-row">
+                            <strong>Browser compatibility issue:</strong>
+                            <p>Use a supported modern browser.</p>
+                        </div>
+                        <div class="troubleshoot-row">
+                            <strong>Internet connection issue:</strong>
+                            <p>Restore a stable connection before continuing.</p>
+                        </div>
+                        <div class="troubleshoot-row">
+                            <strong>Unexpected page behavior:</strong>
+                            <p>Avoid repeatedly refreshing the examination page and contact support if necessary.</p>
+                        </div>
+                        <div class="troubleshoot-row">
+                            <strong>Issue during an active examination:</strong>
+                            <p>Follow the examination administrator's designated support procedure.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- VIEW 3: Dedicated Profile Page -->
+        <main class="content-container" id="profile-view" style="display: none;">
+            <div class="card" style="padding: 2.25rem;">
+                <div class="card-header-row" style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-card); padding-bottom: 1.25rem;">
+                    <div>
+                        <h2 style="font-size: var(--font-xl);">Your Profile</h2>
+                        <p style="color: var(--text-muted); font-size: var(--font-sm); margin-top: 0.2rem;">View and manage your verified candidate credentials.</p>
+                    </div>
+                    <button class="btn-secondary" onclick="alert('Candidate profile details are managed through your institution registration authority.')">
+                        Edit Profile
+                    </button>
+                </div>
+
+                <div class="profile-page-card">
+                    <div class="profile-photo-container" id="profile-page-photo-box">
+                        <img id="profile-page-photo" src="/api/auth/photo" alt="Registration Photo" onerror="handleProfilePagePhotoError()">
+                        <div id="profile-page-initials" style="display: none;">👤</div>
+                    </div>
+
+                    <div class="profile-details-grid">
+                        <div class="profile-field-row">
+                            <span class="field-label">Full Name:</span>
+                            <strong class="field-val" id="prof-full-name">--</strong>
+                        </div>
+
+                        <div class="profile-field-row">
+                            <span class="field-label">Candidate ID:</span>
+                            <strong class="field-val" id="prof-id">--</strong>
+                        </div>
+
+                        <div class="profile-field-row">
+                            <span class="field-label">Email Address:</span>
+                            <strong class="field-val" id="prof-email">--</strong>
+                        </div>
+
+                        <div class="profile-field-row">
+                            <span class="field-label">Identity Baseline:</span>
+                            <strong class="field-val" style="color: var(--success-text);">Verified Photo</strong>
+                        </div>
+
+                        <div class="profile-field-row">
+                            <span class="field-label">Username:</span>
+                            <strong class="field-val" id="prof-username">--</strong>
+                        </div>
+
+                        <div class="profile-field-row">
+                            <span class="field-label">Account Status:</span>
+                            <strong class="field-val" style="color: var(--success-text);">Active</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Schedule Exam Modal -->
+    <div id="schedule-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 class="modal-title">Schedule Examination</h3>
+            <p class="modal-subtitle">Select an available assessment to initialize a proctored session.</p>
+
+            <form onsubmit="handleScheduleExam(event)">
+                <label style="font-size: var(--font-sm); font-weight: 600; color: var(--text-dark); display: block; margin-bottom: 0.5rem;">Assessment Subject</label>
+                <select id="select-exam-id" class="form-select" required>
+                    <option value="CS-101: Data Structures & Algorithms">CS-101: Data Structures & Algorithms</option>
+                    <option value="CS-201: Relational Database Systems">CS-201: Relational Database Systems</option>
+                    <option value="CS-301: Operating Systems & Architecture">CS-301: Operating Systems & Architecture</option>
+                    <option value="CS-401: Computer Networks & Security">CS-401: Computer Networks & Security</option>
+                </select>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeScheduleModal()">Cancel</button>
+                    <button type="submit" class="btn-primary" id="btn-submit-schedule" style="padding: 0.75rem 1.4rem;">Initialize Session</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let authenticatedCandidate = null;
+        let candidateSessions = [];
+
+        // Interactive System Check State Tracking
+        const checkResults = {
+            camera: null,   // null | 'testing' | 'ready' | 'failed'
+            browser: null,  // null | 'testing' | 'ready' | 'failed'
+            net: null       // null | 'testing' | 'ready' | 'failed'
+        };
+
+        window.addEventListener("DOMContentLoaded", () => {
+            fetchCandidateDataAndSessions();
+
+            // Handle initial view from hash or pathname
+            if (window.location.pathname.includes("/profile") || window.location.hash === "#profile") {
+                switchView('profile');
+            } else if (window.location.pathname.includes("/instructions") || window.location.hash === "#instructions") {
+                switchView('instructions');
+            } else {
+                switchView('dashboard');
+            }
+        });
+
+        // Toggle Profile View from Top-Right Header Badge
+        function toggleProfileView(event) {
+            if (event) event.preventDefault();
+            const profileView = document.getElementById("profile-view");
+            const isProfileActive = profileView && profileView.style.display !== "none";
+            if (isProfileActive) {
+                switchView("dashboard");
+            } else {
+                switchView("profile");
+            }
+        }
+
+        // View Switching (Supports 'dashboard', 'profile', and 'instructions')
+        function switchView(viewName, event) {
+            if (event) event.preventDefault();
+
+            const dashboardView = document.getElementById("dashboard-view");
+            const profileView = document.getElementById("profile-view");
+            const instructionsView = document.getElementById("instructions-view");
+
+            const navDashboard = document.getElementById("nav-dashboard");
+            const navProfile = document.getElementById("nav-profile");
+            const navInstructions = document.getElementById("nav-instructions");
+
+            const welcomeHeading = document.getElementById("welcome-heading");
+            const welcomeSubtext = document.getElementById("welcome-subtext");
+            const btnTopSchedule = document.getElementById("btn-top-schedule");
+
+            // Reset navigation active classes
+            if (navDashboard) navDashboard.classList.remove("active");
+            if (navProfile) navProfile.classList.remove("active");
+            if (navInstructions) navInstructions.classList.remove("active");
+
+            // Hide all view containers
+            if (dashboardView) dashboardView.style.display = "none";
+            if (profileView) profileView.style.display = "none";
+            if (instructionsView) instructionsView.style.display = "none";
+
+            if (viewName === "profile") {
+                profileView.style.display = "block";
+                if (navProfile) navProfile.classList.add("active");
+                if (btnTopSchedule) btnTopSchedule.style.display = "none";
+
+                welcomeHeading.textContent = "Your Profile";
+                welcomeSubtext.textContent = "View and manage your candidate information.";
+                window.history.replaceState(null, "", "#profile");
+            } else if (viewName === "instructions") {
+                instructionsView.style.display = "flex";
+                if (navInstructions) navInstructions.classList.add("active");
+                if (btnTopSchedule) btnTopSchedule.style.display = "none";
+
+                welcomeHeading.textContent = "Examination Instructions";
+                welcomeSubtext.textContent = "Please review these guidelines carefully before starting your examination.";
+                window.history.replaceState(null, "", "#instructions");
+            } else {
+                dashboardView.style.display = "flex";
+                if (navDashboard) navDashboard.classList.add("active");
+                if (btnTopSchedule) btnTopSchedule.style.display = "inline-flex";
+
+                if (authenticatedCandidate) {
+                    welcomeHeading.textContent = `Welcome back, ${authenticatedCandidate.full_name.split(' ')[0]} 👋`;
+                } else {
+                    welcomeHeading.textContent = "Welcome back 👋";
+                }
+                welcomeSubtext.textContent = "Here's what's happening with your examinations.";
+                window.history.replaceState(null, "", "#dashboard");
+            }
+
+            if (window.innerWidth <= 900) {
+                document.getElementById("sidebar").classList.remove("open");
+            }
+        }
+
+        async function fetchCandidateDataAndSessions() {
+            try {
+                // 1. Verify candidate session
+                const authRes = await fetch("/api/auth/me", { credentials: "include" });
+                const authData = await authRes.json();
+
+                if (!authData.authenticated || !authData.candidate) {
+                    window.location.href = "/login";
+                    return;
+                }
+
+                authenticatedCandidate = authData.candidate;
+                renderCandidateProfile(authenticatedCandidate);
+
+                // 2. Fetch candidate exam sessions
+                const sessionsRes = await fetch("/api/exam-sessions", { credentials: "include" });
+                const sessionsData = await sessionsRes.json();
+                candidateSessions = sessionsData.sessions || [];
+
+                renderDashboardSessions(candidateSessions);
+            } catch (err) {
+                console.error("Dashboard fetch error:", err);
+            }
+        }
+
+        function renderCandidateProfile(cand) {
+            // Update Header user info
+            const firstName = cand.full_name.split(' ')[0];
+            if (document.getElementById("nav-dashboard").classList.contains("active")) {
+                document.getElementById("welcome-heading").textContent = `Welcome back, ${firstName} 👋`;
+            }
+            document.getElementById("header-candidate-name").textContent = cand.full_name;
+
+            // Render Dedicated Profile Page Data
+            document.getElementById("prof-full-name").textContent = cand.full_name;
+            document.getElementById("prof-email").textContent = cand.email;
+            document.getElementById("prof-id").textContent = `#${cand.id}`;
+            document.getElementById("prof-username").textContent = cand.username || "--";
+        }
+
+        function handleHeaderAvatarError() {
+            document.getElementById("header-avatar-img").style.display = "none";
+            const initialsSpan = document.getElementById("header-avatar-initials");
+            initialsSpan.style.display = "block";
+            if (authenticatedCandidate) {
+                const initials = authenticatedCandidate.full_name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+                initialsSpan.textContent = initials;
+            }
+        }
+
+        function handleProfilePagePhotoError() {
+            document.getElementById("profile-page-photo").style.display = "none";
+            const initialsDiv = document.getElementById("profile-page-initials");
+            initialsDiv.style.display = "block";
+            if (authenticatedCandidate) {
+                const initials = authenticatedCandidate.full_name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+                initialsDiv.textContent = initials;
+            }
+        }
+
+        function renderDashboardSessions(sessions) {
+            const upcomingCount = sessions.filter(s => s.status === "scheduled").length;
+            const activeCount = sessions.filter(s => s.status === "active" || s.status === "paused").length;
+            const completedCount = sessions.filter(s => s.status === "submitted").length;
+
+            document.getElementById("stat-upcoming").textContent = upcomingCount;
+            document.getElementById("stat-active").textContent = activeCount;
+            document.getElementById("stat-completed").textContent = completedCount;
+
+            const upcomingContainer = document.getElementById("upcoming-body");
+            const upcomingBadge = document.getElementById("upcoming-status-badge");
+
+            const primaryExam = sessions.find(s => s.status === "active" || s.status === "paused") || sessions.find(s => s.status === "scheduled");
+
+            if (primaryExam) {
+                const isActive = primaryExam.status === "active";
+                upcomingBadge.className = `status-badge ${isActive ? "badge-active" : "badge-scheduled"}`;
+                upcomingBadge.innerHTML = isActive ? `<span class="pulse-dot"></span> In Progress` : `Scheduled`;
+
+                const actionHref = isActive ? `/exam?session_id=${primaryExam.id}` : `/exam-instructions?session_id=${primaryExam.id}`;
+                const actionText = isActive ? "Resume Examination →" : "Start Exam →";
+
+                upcomingContainer.innerHTML = `
+                    <div class="upcoming-title-box">
+                        <h3>${primaryExam.exam_identifier}</h3>
+                        <p>Session #${primaryExam.id} • Proctored Assessment</p>
+                    </div>
+
+                    <div class="exam-meta-grid">
+                        <div class="meta-pill-item">
+                            <span class="lbl">Date</span>
+                            <strong class="val">${new Date(primaryExam.created_at).toLocaleDateString()}</strong>
+                        </div>
+                        <div class="meta-pill-item">
+                            <span class="lbl">Duration</span>
+                            <strong class="val">60 Mins</strong>
+                        </div>
+                        <div class="meta-pill-item">
+                            <span class="lbl">Format</span>
+                            <strong class="val">Online Video</strong>
+                        </div>
+                    </div>
+
+                    <div class="upcoming-btn-row">
+                        <a href="${actionHref}" class="btn-primary">${actionText}</a>
+                        <button class="btn-secondary" onclick="openScheduleModal()">+ Schedule Another</button>
+                    </div>
+                `;
+            } else {
+                upcomingBadge.className = "status-badge badge-scheduled";
+                upcomingBadge.textContent = "No Active Exam";
+                upcomingContainer.innerHTML = `
+                    <div class="empty-state-box">
+                        <div style="font-size: 2.2rem;">📝</div>
+                        <h3>No Upcoming Examinations</h3>
+                        <p style="font-size: var(--font-sm);">You do not have any exams scheduled right now.</p>
+                        <button class="btn-primary" onclick="openScheduleModal()" style="margin-top: 0.5rem;">+ Schedule Examination</button>
+                    </div>
+                `;
+            }
+
+            const tableBody = document.getElementById("exams-table-body");
+            tableBody.innerHTML = "";
+
+            if (sessions.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted);">
+                            No examination records found. Click "+ Schedule Exam" above to get started.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            sessions.forEach(sess => {
+                const tr = document.createElement("tr");
+
+                let badgeHtml = `<span class="status-badge badge-scheduled">Scheduled</span>`;
+                let actionHtml = `<a href="/exam-instructions?session_id=${sess.id}" class="btn-table-action btn-action-start">Start →</a>`;
+
+                if (sess.status === "active") {
+                    badgeHtml = `<span class="status-badge badge-active"><span class="pulse-dot"></span> Active</span>`;
+                    actionHtml = `<a href="/exam?session_id=${sess.id}" class="btn-table-action btn-action-resume">Resume →</a>`;
+                } else if (sess.status === "submitted") {
+                    badgeHtml = `<span class="status-badge badge-submitted">Submitted</span>`;
+                    actionHtml = `<button class="btn-table-action btn-action-summary" onclick="alert('Session #${sess.id} has been submitted. Full proctoring audit report will be published after review.')">View Summary</button>`;
+                }
+
+                tr.innerHTML = `
+                    <td>
+                        <div class="exam-title-cell">
+                            ${sess.exam_identifier}
+                            <small>Online Proctored Session</small>
+                        </div>
+                    </td>
+                    <td>#${sess.id}</td>
+                    <td>60 Mins</td>
+                    <td>--</td>
+                    <td>${badgeHtml}</td>
+                    <td>${actionHtml}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        /* ==========================================================================
+           Interactive System Check Logic
+           ========================================================================== */
+        function updateOverallSystemStatus() {
+            const overallBadge = document.getElementById("overall-system-status");
+            const { camera, browser, net } = checkResults;
+
+            if (camera === 'testing' || browser === 'testing' || net === 'testing') {
+                overallBadge.className = "status-badge badge-testing";
+                overallBadge.innerHTML = `<span class="pulse-dot"></span> Testing...`;
+            } else if (camera === 'ready' && browser === 'ready' && net === 'ready') {
+                overallBadge.className = "status-badge badge-active";
+                overallBadge.textContent = "✓ System Ready";
+            } else if (camera === 'failed' || browser === 'failed' || net === 'failed') {
+                overallBadge.className = "status-badge badge-failed";
+                overallBadge.textContent = "⚠ Action Required";
+            } else {
+                overallBadge.className = "status-badge badge-neutral";
+                overallBadge.textContent = "Run System Check";
+            }
+        }
+
+        // 1. Camera Access Check
+        async function runCameraCheck() {
+            if (checkResults.camera === 'testing') return;
+            checkResults.camera = 'testing';
+            updateOverallSystemStatus();
+
+            const actionBox = document.getElementById("action-box-camera");
+            actionBox.innerHTML = `<span class="status-badge badge-testing"><span class="pulse-dot"></span> Testing...</span>`;
+
+            try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error("Camera API unavailable");
+                }
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                stream.getTracks().forEach(track => track.stop());
+
+                checkResults.camera = 'ready';
+                actionBox.innerHTML = `<span class="status-badge badge-active">✓ Ready</span>`;
+            } catch (err) {
+                checkResults.camera = 'failed';
+                actionBox.innerHTML = `
+                    <span class="status-badge badge-failed" style="margin-right: 0.35rem;">✕ Failed</span>
+                    <button type="button" class="btn-check-pill" onclick="runCameraCheck()">Retry</button>
+                `;
+            }
+            updateOverallSystemStatus();
+        }
+
+        // 2. Browser Compatibility Check
+        async function runBrowserCheck() {
+            if (checkResults.browser === 'testing') return;
+            checkResults.browser = 'testing';
+            updateOverallSystemStatus();
+
+            const actionBox = document.getElementById("action-box-browser");
+            actionBox.innerHTML = `<span class="status-badge badge-testing"><span class="pulse-dot"></span> Testing...</span>`;
+
+            await new Promise(r => setTimeout(r, 200));
+
+            try {
+                const hasMedia = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+                const hasVisibility = typeof document.hidden !== 'undefined' || typeof document.visibilityState !== 'undefined';
+                const hasEvents = typeof window.addEventListener === 'function';
+                const hasFetch = typeof window.fetch === 'function';
+
+                if (hasMedia && hasVisibility && hasEvents && hasFetch) {
+                    checkResults.browser = 'ready';
+                    actionBox.innerHTML = `<span class="status-badge badge-active">✓ Supported</span>`;
+                } else {
+                    throw new Error("Missing browser capabilities for proctoring");
+                }
+            } catch (err) {
+                checkResults.browser = 'failed';
+                actionBox.innerHTML = `
+                    <span class="status-badge badge-failed" style="margin-right: 0.35rem;">✕ Unsupported</span>
+                    <button type="button" class="btn-check-pill" onclick="runBrowserCheck()">Retry</button>
+                `;
+            }
+            updateOverallSystemStatus();
+        }
+
+        // 3. Internet Connection Check
+        async function runNetworkCheck() {
+            if (checkResults.net === 'testing') return;
+            checkResults.net = 'testing';
+            updateOverallSystemStatus();
+
+            const actionBox = document.getElementById("action-box-net");
+            actionBox.innerHTML = `<span class="status-badge badge-testing"><span class="pulse-dot"></span> Testing...</span>`;
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+                const res = await fetch("/api/health?t=" + Date.now(), {
+                    cache: "no-store",
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                if (res.ok) {
+                    checkResults.net = 'ready';
+                    actionBox.innerHTML = `<span class="status-badge badge-active">✓ Connected</span>`;
+                } else {
+                    throw new Error("Health check non-200");
+                }
+            } catch (err) {
+                checkResults.net = 'failed';
+                actionBox.innerHTML = `
+                    <span class="status-badge badge-failed" style="margin-right: 0.35rem;">✕ Connection Failed</span>
+                    <button type="button" class="btn-check-pill" onclick="runNetworkCheck()">Retry</button>
+                `;
+            }
+            updateOverallSystemStatus();
+        }
+
+        // Run All Checks
+        async function runAllSystemChecks() {
+            const btn = document.getElementById("btn-run-all-checks");
+            btn.disabled = true;
+            btn.innerHTML = `<span class="pulse-dot"></span> Testing System...`;
+
+            await Promise.all([
+                runCameraCheck(),
+                runBrowserCheck(),
+                runNetworkCheck()
+            ]);
+
+            btn.disabled = false;
+            btn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <polyline points="1 20 1 14 7 14"></polyline>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                <span>Run All Checks</span>
+            `;
+        }
+
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+            if (window.innerWidth <= 900) {
+                document.getElementById("sidebar").classList.remove("open");
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+        }
+
+        function openScheduleModal() {
+            document.getElementById("schedule-modal").style.display = "flex";
+        }
+
+        function closeScheduleModal() {
+            document.getElementById("schedule-modal").style.display = "none";
+        }
+
+        async function handleScheduleExam(e) {
+            e.preventDefault();
+            const examId = document.getElementById("select-exam-id").value;
+            const btn = document.getElementById("btn-submit-schedule");
+
+            btn.disabled = true;
+            btn.textContent = "Initializing...";
+
+            try {
+                const res = await fetch("/api/exam-sessions", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ exam_identifier: examId }),
+                    credentials: "include"
+                });
+
+                if (res.ok) {
+                    closeScheduleModal();
+                    fetchCandidateDataAndSessions();
+                } else {
+                    const data = await res.json();
+                    alert(data.error || "Failed to schedule examination.");
+                }
+            } catch (err) {
+                alert("Network error scheduling examination session.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Initialize Session";
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+            } finally {
+                window.location.href = "/login";
+            }
+        }
+    </script>
+</body>
+</html>
