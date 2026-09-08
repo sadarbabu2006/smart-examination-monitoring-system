@@ -19,8 +19,8 @@ def client(app):
 
 
 def setup_candidate_and_session(client, email="ada@example.test", start=True):
-    client.post("/api/auth/register", json={"full_name": "Ada Candidate", "email": email, "password": "safe-password"})
-    client.post("/api/auth/login", json={"email": email, "password": "safe-password"})
+    client.post("/api/auth/register", json={"full_name": "Ada Candidate", "email": email, "password": "Safe-password-123!"})
+    client.post("/api/auth/login", json={"email": email, "password": "Safe-password-123!"})
     res = client.post("/api/exam-sessions", json={"exam_identifier": "EXAM-101"})
     session_id = res.get_json()["session"]["id"]
     if start:

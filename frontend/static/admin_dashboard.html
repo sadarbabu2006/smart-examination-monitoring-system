@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proctor Dashboard - ExamGuard Institutional Portal</title>
+    <style>
+        /* ==========================================================================
+           1. Design System & Light Theme Tokens (Matching Candidate Dashboard)
+           ========================================================================== */
+        :root {
+            /* 6-Tier Unified Typography Scale */
+            --font-xs: 0.75rem;    /* 12px - Footnotes & micro-badges */
+            --font-sm: 0.875rem;   /* 14px - Body copy, labels, table cells */
+            --font-base: 1rem;     /* 16px - Base text, inputs, buttons */
+            --font-md: 1.125rem;   /* 18px - Subheadings, stat numbers */
+            --font-lg: 1.25rem;    /* 20px - Card & section headers (H2) */
+            --font-xl: 1.5rem;     /* 24px - Page main title (H1) */
+
+            /* High-Visibility Light Theme Borders & Backgrounds */
+            --border-card: #d5bcb7;      /* Distinct, visible rose-gray/warm beige card border */
+            --border-subtle: #e5d0cc;    /* Inner row/check separators */
+            --bg-page: #e7ddd4;          /* Rich, warm sand/linen background matching candidate dashboard */
+            --bg-card: #ffffff;          /* Pure white elevated cards */
+            --bg-hover: #fff0f2;         /* Soft rose hover state */
+
+            /* Text Tokens */
+            --text-dark: #172033;        /* Dark navy/charcoal for strong legible contrast */
+            --text-body: #334155;        /* Clean readable body text */
+            --text-muted: #64748b;       /* Muted blue-gray secondary text */
+            --coral-primary: #ff4f6f;    /* Vibrant coral/pink primary accent */
+            --coral-hover: #e13254;      /* Button hover state */
+            --coral-light: #fff1f3;      /* Active navigation / chip background */
+            --coral-border: #fecdd3;     /* Subtle coral border */
+            --coral-shadow: rgba(255, 79, 111, 0.22);
+
+            /* Status & Risk Tokens */
+            --success-text: #047857;
+            --warning-text: #b45309;
+            --info-text: #1d4ed8;
+            --danger-text: #e11d48;
+
+            --success-bg: #ecfdf5;
+            --success-border: #a7f3d0;
+            --warning-bg: #fffbeb;
+            --warning-border: #fde68a;
+            --info-bg: #eff6ff;
+            --info-border: #bfdbfe;
+            --failed-bg: #fef2f2;
+            --failed-border: #fecaca;
+            --neutral-bg: #f1f5f9;
+            --neutral-border: #cbd5e1;
+
+            /* Radii & Shadows */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-full: 9999px;
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.03);
+            --shadow-card: 0 4px 18px rgba(225, 112, 85, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+            --shadow-btn: 0 4px 14px rgba(255, 79, 111, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            font-size: var(--font-sm);
+            line-height: 1.5;
+        }
+
+        /* ==========================================================================
+           2. Sidebar Layout
+           ========================================================================== */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-card);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 50;
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            border-bottom: 1px solid var(--border-card);
+            text-decoration: none;
+        }
+
+        .brand-logo-box {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #ff718a 0%, var(--coral-primary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 6px 14px var(--coral-shadow);
+            flex-shrink: 0;
+        }
+
+        .brand-text h2 {
+            font-size: var(--font-lg);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text-dark);
+            line-height: 1.15;
+        }
+
+        .brand-text span {
+            font-size: var(--font-xs);
+            font-weight: 700;
+            color: var(--coral-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .sidebar-nav {
+            padding: 1.25rem 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-body);
+            text-decoration: none;
+            font-size: var(--font-sm);
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: var(--coral-primary);
+            background: var(--bg-hover);
+        }
+
+        .nav-link.active {
+            color: var(--coral-primary);
+            background: var(--coral-light);
+            font-weight: 700;
+        }
+
+        .nav-link svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer {
+            padding: 1rem 0.85rem;
+            border-top: 1px solid var(--border-card);
+        }
+
+        .btn-logout {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--radius-md);
+            color: var(--danger-text);
+            font-size: var(--font-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-logout:hover {
+            background: #fef2f2;
+        }
+
+        /* ==========================================================================
+           3. Main Workspace & Header
+           ========================================================================== */
+        .main-wrapper {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            max-width: calc(100vw - 260px);
+        }
+
+        .top-header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-card);
+            padding: 1.15rem 2.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .header-left h1 {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+        }
+
+        .header-left p {
+            font-size: var(--font-sm);
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.15rem;
+        }
+
+        .admin-profile-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            padding: 0.35rem 0.9rem;
+            border-radius: var(--radius-full);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .role-tag {
+            font-size: var(--font-xs);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.22rem 0.6rem;
+            border-radius: var(--radius-full);
+            background: var(--info-bg);
+            color: var(--info-text);
+            border: 1px solid var(--info-border);
+        }
+
+        .role-tag.admin {
+            background: var(--failed-bg);
+            color: var(--danger-text);
+            border-color: var(--failed-border);
+        }
+
+        .btn-refresh {
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 0.55rem 1.05rem;
+            font-size: var(--font-sm);
+            font-weight: 600;
+            color: var(--text-dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-refresh:hover {
+            border-color: var(--coral-primary);
+            color: var(--coral-primary);
+            background: var(--coral-light);
+        }
+
+        /* ==========================================================================
+           4. Content Area & Individual White Metric Cards
+           ========================================================================== */
+        .content-area {
+            padding: 2rem 2.25rem 3.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 1.3rem 1.4rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(225, 112, 85, 0.08);
+        }
+
+        .stat-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .stat-icon-active {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+        }
+
+        .stat-icon-submitted {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        .stat-icon-high-risk {
+            background: #fff1f2;
+            color: #e11d48;
+            border: 1px solid #fecdd3;
+        }
+
+        .stat-icon-total {
+            background: #faf6f4;
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .stat-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: var(--font-xs);
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .stat-number {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-top: 0.15rem;
+            line-height: 1.1;
+        }
+
+        .stat-sub {
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        /* ==========================================================================
+           5. Large Bordered White Panel for Recent Examination Sessions
+           ========================================================================== */
+        .panel-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            padding: 1.6rem 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1.5px solid var(--border-subtle);
+            padding-bottom: 1.15rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .panel-header h2 {
+            font-size: var(--font-lg);
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.01em;
+        }
+
+        .panel-header p {
+            font-size: var(--font-sm);
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .audit-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: var(--font-sm);
+        }
+
+        .audit-table th {
+            background: #faf6f4;
+            color: var(--text-muted);
+            font-size: var(--font-xs);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.95rem 1.15rem;
+            border-bottom: 1.5px solid var(--border-subtle);
+        }
+
+        .audit-table td {
+            padding: 1.15rem 1.15rem;
+            font-size: var(--font-sm);
+            color: var(--text-body);
+            border-bottom: 1px solid var(--border-subtle);
+            vertical-align: middle;
+        }
+
+        .audit-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .audit-table tbody tr:hover td {
+            background-color: var(--bg-hover);
+        }
+
+        .candidate-cell strong {
+            display: block;
+            color: var(--text-dark);
+            font-size: var(--font-sm);
+            font-weight: 700;
+        }
+
+        .candidate-cell span {
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+        }
+
+        code.session-id-tag {
+            background: #faf6f4;
+            border: 1px solid var(--border-subtle);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            font-family: inherit;
+        }
+
+        /* Status & Risk Badges */
+        .status-pill {
+            font-size: var(--font-xs);
+            font-weight: 700;
+            padding: 0.28rem 0.65rem;
+            border-radius: var(--radius-full);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            text-transform: capitalize;
+        }
+
+        .status-active {
+            background: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid var(--success-border);
+        }
+
+        .status-submitted {
+            background: var(--info-bg);
+            color: var(--info-text);
+            border: 1px solid var(--info-border);
+        }
+
+        .status-scheduled {
+            background: var(--warning-bg);
+            color: var(--warning-text);
+            border: 1px solid var(--warning-border);
+        }
+
+        .risk-badge {
+            font-size: var(--font-xs);
+            font-weight: 800;
+            padding: 0.28rem 0.65rem;
+            border-radius: var(--radius-full);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            letter-spacing: 0.02em;
+        }
+
+        .risk-high {
+            background: #fff1f2;
+            color: #be123c;
+            border: 1px solid #fecdd3;
+        }
+
+        .risk-medium {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+
+        .risk-low {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .risk-monitoring {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        @media (max-width: 1100px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 800px) {
+            .sidebar {
+                display: none;
+            }
+            .main-wrapper {
+                margin-left: 0;
+                max-width: 100vw;
+            }
+            .content-area {
+                padding: 1.25rem 1rem;
+            }
+            .top-header {
+                padding: 1rem 1.25rem;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation Shell -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <h2>ExamGuard</h2>
+                <span>Proctor Portal</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/admin" class="nav-link active">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Overview</span>
+            </a>
+
+            <a href="#live-examinations" class="nav-link" onclick="handleModuleClick('Live Examinations')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <span>Live Examinations</span>
+            </a>
+
+            <a href="#candidates" class="nav-link" onclick="handleModuleClick('Candidates')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Candidates</span>
+            </a>
+
+            <a href="#integrity-audit" class="nav-link" onclick="handleModuleClick('Integrity Audit')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <polyline points="9 11 12 14 22 4"></polyline>
+                </svg>
+                <span>Integrity Audit</span>
+            </a>
+
+            <a href="#evidence" class="nav-link" onclick="handleModuleClick('Evidence')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+                <span>Evidence</span>
+            </a>
+
+            <a href="#reports" class="nav-link" onclick="handleModuleClick('Reports')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                <span>Reports</span>
+            </a>
+
+            <a href="#analytics" class="nav-link" onclick="handleModuleClick('Analytics')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>Analytics</span>
+            </a>
+
+            <a href="#settings" class="nav-link" onclick="handleModuleClick('Settings')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn-logout" id="btn-logout" onclick="handleAdminLogout()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <div class="main-wrapper">
+        <!-- Top Sticky Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Institution Proctor Dashboard</h1>
+                <p>Live candidate telemetry, session oversight, and automated integrity auditing.</p>
+            </div>
+
+            <div class="header-right">
+                <button class="btn-refresh" onclick="loadDashboardData()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    <span>Refresh</span>
+                </button>
+
+                <div class="admin-profile-pill">
+                    <strong id="admin-name" style="font-size: var(--font-sm); color: var(--text-dark);">Loading...</strong>
+                    <span id="admin-role" class="role-tag">PROCTOR</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- 4 Real-time Summary Cards (Matching Candidate Dashboard style) -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper stat-icon-active">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-meta">
+                        <span class="stat-label">Active Examinations</span>
+                        <div class="stat-number" id="stat-active" style="color: #2563eb;">--</div>
+                        <span class="stat-sub">Currently monitored</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper stat-icon-submitted">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-meta">
+                        <span class="stat-label">Submitted Examinations</span>
+                        <div class="stat-number" id="stat-submitted" style="color: #059669;">--</div>
+                        <span class="stat-sub">Completed sessions</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper stat-icon-high-risk">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    <div class="stat-meta">
+                        <span class="stat-label">High Risk Sessions</span>
+                        <div class="stat-number" id="stat-high-risk" style="color: #e11d48;">--</div>
+                        <span class="stat-sub">Flagged for manual review</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper stat-icon-total">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <div class="stat-meta">
+                        <span class="stat-label">Total Sessions</span>
+                        <div class="stat-number" id="stat-total">--</div>
+                        <span class="stat-sub">Total database volume</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Large Bordered White Card for Recent Examination Sessions -->
+            <section class="panel-card">
+                <div class="panel-header">
+                    <div>
+                        <h2>Recent Examination Sessions</h2>
+                        <p>Real-time candidate roster prioritized by integrity audit risk (HIGH &gt; MEDIUM &gt; LOW &gt; Active).</p>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="audit-table">
+                        <thead>
+                            <tr>
+                                <th>Candidate</th>
+                                <th>Examination</th>
+                                <th>Session ID</th>
+                                <th>Status</th>
+                                <th>Start Time</th>
+                                <th>Submission Time</th>
+                                <th>Integrity Score</th>
+                                <th>Audit Risk</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sessions-tbody">
+                            <tr>
+                                <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                                    Loading live examination sessions...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Check session and load data on DOM load
+        window.addEventListener("DOMContentLoaded", async () => {
+            await verifyAdminSession();
+            await loadDashboardData();
+        });
+
+        async function verifyAdminSession() {
+            try {
+                const res = await fetch("/api/admin/auth/me", { credentials: "include" });
+                const data = await res.json();
+                if (!res.ok || !data.authenticated) {
+                    window.location.href = "/admin/login";
+                    return;
+                }
+                document.getElementById("admin-name").textContent = data.admin.full_name;
+                const roleEl = document.getElementById("admin-role");
+                roleEl.textContent = data.admin.role;
+                if (data.admin.role === "ADMIN") {
+                    roleEl.classList.add("admin");
+                }
+            } catch (err) {
+                window.location.href = "/admin/login";
+            }
+        }
+
+        async function loadDashboardData() {
+            try {
+                // 1. Fetch Summary Stats
+                const summaryRes = await fetch("/api/admin/dashboard/summary", { credentials: "include" });
+                if (summaryRes.ok) {
+                    const data = await summaryRes.json();
+                    const s = data.summary || {};
+                    document.getElementById("stat-active").textContent = s.active_sessions ?? "--";
+                    document.getElementById("stat-submitted").textContent = s.submitted_sessions ?? "--";
+                    document.getElementById("stat-high-risk").textContent = s.high_risk_sessions ?? "--";
+                    document.getElementById("stat-total").textContent = s.total_sessions ?? "--";
+                }
+
+                // 2. Fetch Sessions List
+                const sessionsRes = await fetch("/api/admin/sessions?limit=50", { credentials: "include" });
+                if (sessionsRes.ok) {
+                    const data = await sessionsRes.json();
+                    renderSessionsTable(data.sessions || []);
+                }
+            } catch (err) {
+                console.error("Failed to load dashboard data:", err);
+            }
+        }
+
+        function renderSessionsTable(sessions) {
+            const tbody = document.getElementById("sessions-tbody");
+            if (!tbody) return;
+
+            if (sessions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                            No examination sessions recorded yet.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = sessions.map(s => {
+                const statusClass = s.status === "active"
+                    ? "status-active"
+                    : (s.status === "submitted" ? "status-submitted" : "status-scheduled");
+
+                let riskBadge = `<span class="risk-badge risk-monitoring">--</span>`;
+                if (s.status === "active") {
+                    riskBadge = `<span class="risk-badge risk-monitoring"><span class="pulse-dot"></span> Monitoring</span>`;
+                } else if (s.risk_level === "HIGH") {
+                    riskBadge = `<span class="risk-badge risk-high">HIGH RISK</span>`;
+                } else if (s.risk_level === "MEDIUM") {
+                    riskBadge = `<span class="risk-badge risk-medium">MEDIUM RISK</span>`;
+                } else if (s.risk_level === "LOW") {
+                    riskBadge = `<span class="risk-badge risk-low">LOW RISK</span>`;
+                }
+
+                const scoreText = s.integrity_score !== null && s.integrity_score !== undefined
+                    ? `<strong>${s.integrity_score}</strong>/100`
+                    : `<span style="color: var(--text-muted);">--</span>`;
+
+                const startText = s.started_at
+                    ? new Date(s.started_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+                    : "--:--";
+
+                const submitText = s.ended_at
+                    ? new Date(s.ended_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+                    : "--:--";
+
+                return `
+                    <tr>
+                        <td class="candidate-cell">
+                            <strong>${escapeHtml(s.candidate_name || "Unknown Candidate")}</strong>
+                            <span>${escapeHtml(s.candidate_email || "--")}</span>
+                        </td>
+                        <td><strong>${escapeHtml(s.exam_identifier)}</strong></td>
+                        <td><code class="session-id-tag">#${s.session_id}</code></td>
+                        <td><span class="status-pill ${statusClass}">${escapeHtml(s.status)}</span></td>
+                        <td>${startText}</td>
+                        <td>${submitText}</td>
+                        <td>${scoreText}</td>
+                        <td>${riskBadge}</td>
+                    </tr>
+                `;
+            }).join("");
+        }
+
+        function handleModuleClick(moduleName) {
+            alert(`The '${moduleName}' module shell is ready. Full interactive proctoring tools for this view will be implemented in the next module.`);
+        }
+
+        async function handleAdminLogout() {
+            try {
+                await fetch("/api/admin/auth/logout", { method: "POST", credentials: "include" });
+            } finally {
+                window.location.href = "/admin/login";
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return "";
+            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+    </script>
+</body>
+</html>

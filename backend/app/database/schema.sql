@@ -49,3 +49,31 @@ CREATE TABLE IF NOT EXISTS face_absence_intervals (
 
 CREATE INDEX IF NOT EXISTS idx_face_absence_session_id ON face_absence_intervals(session_id);
 
+CREATE TABLE IF NOT EXISTS integrity_scores (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id INTEGER NOT NULL UNIQUE,
+    integrity_score INTEGER NOT NULL CHECK (integrity_score >= 0 AND integrity_score <= 100),
+    risk_level TEXT NOT NULL CHECK (risk_level IN ('LOW', 'MEDIUM', 'HIGH')),
+    face_presence_ratio REAL,
+    monitored_duration_seconds REAL,
+    face_absence_seconds REAL,
+    suspicious_event_count INTEGER NOT NULL DEFAULT 0,
+    breakdown TEXT NOT NULL,
+    calculated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (session_id) REFERENCES exam_sessions(id) ON DELETE RESTRICT
+);
+
+CREATE INDEX IF NOT EXISTS idx_integrity_scores_session_id ON integrity_scores(session_id);
+
+CREATE TABLE IF NOT EXISTS proctor_admins (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    full_name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE COLLATE NOCASE,
+    password_hash TEXT NOT NULL,
+    role TEXT NOT NULL CHECK (role IN ('PROCTOR', 'ADMIN')),
+    is_active INTEGER NOT NULL DEFAULT 1 CHECK (is_active IN (0, 1)),
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_proctor_admins_email ON proctor_admins(email);
+

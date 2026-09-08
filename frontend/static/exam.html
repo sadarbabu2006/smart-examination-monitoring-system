@@ -129,7 +129,13 @@
             <span class="badge badge-active" id="monitoring-status-badge">
                 <span class="pulse-dot"></span> Proctoring Active
             </span>
-            <span class="badge badge-warning" id="timer-display">⏱ 60:00</span>
+            <span class="badge badge-warning" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span id="timer-display">60:00</span>
+            </span>
             <button class="btn btn-danger" onclick="confirmSubmit()" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
                 Finish & Submit
             </button>
@@ -150,13 +156,27 @@
                 </div>
 
                 <div class="workspace-empty-state">
-                    <div class="empty-icon">📄</div>
+                    <div class="empty-icon">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--text-muted); display: block; margin: 0 auto 1rem;">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
                     <h3 class="empty-title">Examination Content Area</h3>
                     <p class="empty-desc">
                         This is the proctored candidate examination shell. The question paper module will load questions here once published by the examination authority.
                     </p>
                     <div style="margin-top: 1.5rem; display: inline-flex; align-items: center; gap: 0.5rem; background: var(--bg-surface); padding: 0.6rem 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-size: 0.85rem; color: #94a3b8;">
-                        <span>🔒 Session Security Active</span>
+                        <span style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            Session Security Active
+                        </span>
                         <span>•</span>
                         <span>Tab & Focus Tracking Enabled</span>
                     </div>
@@ -197,7 +217,14 @@
 
                 <!-- Guidance Reminder -->
                 <div class="card" style="padding: 1.25rem; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; background: rgba(17, 24, 39, 0.6);">
-                    <strong style="color: #93c5fd; display: block; margin-bottom: 0.35rem;">⚠️ Active Proctoring Notice:</strong>
+                    <strong style="color: #93c5fd; display: flex; align-items: center; gap: 0.45rem; margin-bottom: 0.35rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        Active Proctoring Notice:
+                    </strong>
                     Do not leave or blur this window. Tab switches, window defocusing, and face absence are tracked in real-time.
                 </div>
             </aside>
@@ -377,7 +404,7 @@
                     timeRemainingSeconds--;
                     const mins = Math.floor(timeRemainingSeconds / 60);
                     const secs = timeRemainingSeconds % 60;
-                    document.getElementById("timer-display").textContent = `⏱ ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                    document.getElementById("timer-display").textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
                 }
             }, 1000);
         }

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proctor & Admin Sign In - ExamGuard Institutional Portal</title>
+    <style>
+        :root {
+            --bg-gradient-start: #fff7f2;
+            --bg-gradient-mid: #fdeee7;
+            --bg-gradient-end: #fce7df;
+
+            --coral-primary: #f43f5e;
+            --coral-hover: #e11d48;
+            --coral-light: #fff1f2;
+            --coral-border: #fecdd3;
+            --coral-shadow: rgba(244, 63, 94, 0.28);
+
+            --text-dark: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+
+            --card-bg: #ffffff;
+            --input-bg: #f8fafc;
+            --input-border: #e2e8f0;
+            --input-focus-border: #fb7185;
+
+            --radius-input: 12px;
+            --radius-card: 24px;
+            --radius-btn: 12px;
+            --radius-full: 9999px;
+
+            --shadow-card: 0 20px 45px -10px rgba(225, 112, 85, 0.12), 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-btn: 0 6px 18px var(--coral-shadow);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 45%, var(--bg-gradient-end) 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 1.5rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Abstract Floating Background Blobs */
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(50px);
+            opacity: 0.55;
+        }
+
+        .bg-blob-1 {
+            width: 440px;
+            height: 440px;
+            background: #fed7aa;
+            top: -120px;
+            left: -100px;
+        }
+
+        .bg-blob-2 {
+            width: 520px;
+            height: 520px;
+            background: #fecdd3;
+            bottom: -160px;
+            right: -100px;
+        }
+
+        .split-layout {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            align-items: center;
+            gap: 3.5rem;
+        }
+
+        /* Left Side: Institutional Identity */
+        .brand-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .brand-logo-container {
+            width: 46px;
+            height: 46px;
+            background: #ffffff;
+            border: 1px solid #fed7aa;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--coral-primary);
+            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.15);
+        }
+
+        .brand-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+            padding: 0.3rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            width: fit-content;
+        }
+
+        .headline-section h1 {
+            font-size: 2.35rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--text-dark);
+            letter-spacing: -0.03em;
+        }
+
+        .headline-section h1 span {
+            color: var(--coral-primary);
+        }
+
+        .headline-section p {
+            margin-top: 0.85rem;
+            font-size: 1.02rem;
+            line-height: 1.55;
+            color: var(--text-muted);
+        }
+
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(254, 205, 211, 0.5);
+            padding: 0.85rem 1.15rem;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .feature-icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--coral-light);
+            color: var(--coral-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-text strong {
+            display: block;
+            font-size: 0.92rem;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .feature-text span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Right Side: Sign-In Card */
+        .login-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+            padding: 2.75rem 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+        }
+
+        .card-header {
+            margin-bottom: 2rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+        }
+
+        .card-header p {
+            margin-top: 0.35rem;
+            font-size: 0.92rem;
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            margin-bottom: 1.35rem;
+        }
+
+        .form-label {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.01em;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon-left {
+            position: absolute;
+            left: 1rem;
+            color: var(--text-light);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-control {
+            width: 100%;
+            height: 48px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-input);
+            padding: 0 1rem 0 2.85rem;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .input-control:focus {
+            background: #ffffff;
+            border-color: var(--input-focus-border);
+            box-shadow: 0 0 0 4px var(--coral-light);
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 0.85rem;
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 0.35rem;
+            display: flex;
+            align-items: center;
+            border-radius: 6px;
+            transition: color 0.15s ease;
+        }
+
+        .toggle-password-btn:hover {
+            color: var(--text-dark);
+        }
+
+        .alert-error {
+            display: none;
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #be123c;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-input);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .btn-submit {
+            width: 100%;
+            height: 48px;
+            background: var(--coral-primary);
+            color: #ffffff;
+            border: none;
+            border-radius: var(--radius-btn);
+            font-size: 0.98rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-btn);
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit:hover {
+            background: var(--coral-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .card-footer-notice {
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid #f1f5f9;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.45;
+        }
+
+        .card-footer-notice a {
+            color: var(--coral-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .card-footer-notice a:hover {
+            text-decoration: underline;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 900px) {
+            .split-layout {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            .brand-section {
+                text-align: center;
+                align-items: center;
+            }
+            .brand-header {
+                justify-content: center;
+            }
+            .feature-list {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+
+    <main class="split-layout">
+        <!-- Left Side: Institutional Identity -->
+        <section class="brand-section">
+            <div class="brand-header">
+                <div class="brand-logo-container">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <div class="brand-title">ExamGuard</div>
+            </div>
+
+            <div class="role-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span>Institutional Portal</span>
+            </div>
+
+            <div class="headline-section">
+                <h1>Institution Proctor & <span>Audit Portal</span></h1>
+                <p>Monitor active examination sessions, verify automated candidate integrity assessments, and review institutional proctoring telemetry in real time.</p>
+            </div>
+
+            <div class="feature-list">
+                <div class="feature-item">
+                    <div class="feature-icon-box">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="feature-text">
+                        <strong>Live Examination Oversight</strong>
+                        <span>Real-time candidate telemetry, status updates, and absence tracking.</span>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon-box">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <polyline points="9 11 12 14 22 4"></polyline>
+                        </svg>
+                    </div>
+                    <div class="feature-text">
+                        <strong>Deterministic Integrity Audits</strong>
+                        <span>Explainable risk scores with itemized deduction breakdowns.</span>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon-box">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <div class="feature-text">
+                        <strong>Strict Institutional Separation</strong>
+                        <span>Dedicated role-based security isolated from candidate access.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Side: Administrative Login Card -->
+        <section class="login-card">
+            <div class="card-header">
+                <h2>Proctor Sign In</h2>
+                <p>Enter your institutional credentials to access the proctor portal.</p>
+            </div>
+
+            <div id="login-alert" class="alert-error" role="alert">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span id="alert-message">Invalid credentials</span>
+            </div>
+
+            <form id="admin-login-form" autocomplete="off">
+                <div class="form-group">
+                    <label for="admin-email" class="form-label">Institutional Email</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon-left">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </span>
+                        <input
+                            type="email"
+                            id="admin-email"
+                            class="input-control"
+                            placeholder="proctor@examguard.test"
+                            required
+                            autocomplete="username"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="admin-password" class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon-left">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </span>
+                        <input
+                            type="password"
+                            id="admin-password"
+                            class="input-control"
+                            placeholder="Enter administrative password"
+                            required
+                            autocomplete="current-password"
+                        />
+                        <button type="button" class="toggle-password-btn" id="btn-toggle-pwd" aria-label="Toggle password visibility">
+                            <svg id="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btn-submit">
+                    <span id="btn-text">Sign In to Dashboard</span>
+                </button>
+            </form>
+
+            <div class="card-footer-notice">
+                <span>Authorized institutional staff and proctors only. Are you a candidate? <a href="/login">Candidate Sign In</a></span>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const loginForm = document.getElementById("admin-login-form");
+        const emailInput = document.getElementById("admin-email");
+        const passwordInput = document.getElementById("admin-password");
+        const togglePwdBtn = document.getElementById("btn-toggle-pwd");
+        const alertBox = document.getElementById("login-alert");
+        const alertMsg = document.getElementById("alert-message");
+        const submitBtn = document.getElementById("btn-submit");
+        const btnText = document.getElementById("btn-text");
+
+        // Toggle password visibility
+        togglePwdBtn.addEventListener("click", () => {
+            const isPassword = passwordInput.type === "password";
+            passwordInput.type = isPassword ? "text" : "password";
+            togglePwdBtn.innerHTML = isPassword
+                ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`
+                : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+        });
+
+        // Form submission handler
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            alertBox.style.display = "none";
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            submitBtn.disabled = true;
+            btnText.innerHTML = `<span class="spinner"></span> Signing In...`;
+
+            try {
+                const res = await fetch("/api/admin/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                    credentials: "include"
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.authenticated) {
+                    window.location.href = "/admin";
+                } else {
+                    alertMsg.textContent = data.error || "Authentication failed. Please check your credentials.";
+                    alertBox.style.display = "flex";
+                }
+            } catch (err) {
+                alertMsg.textContent = "Network error connecting to institutional authentication service.";
+                alertBox.style.display = "flex";
+            } finally {
+                submitBtn.disabled = false;
+                btnText.textContent = "Sign In to Dashboard";
+            }
+        });
+    </script>
+</body>
+</html>

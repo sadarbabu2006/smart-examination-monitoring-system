@@ -95,12 +95,12 @@
         .split-layout {
             position: relative;
             z-index: 1;
-            max-width: 1140px;
+            max-width: 1240px;
             width: 100%;
             display: grid;
-            grid-template-columns: 1fr 1.08fr;
-            align-items: center;
-            gap: 3.5rem;
+            grid-template-columns: 390px 1fr;
+            align-items: start;
+            gap: 2.75rem;
         }
 
         /* LEFT SIDE: Brand, Tagline, and Illustration */
@@ -108,6 +108,7 @@
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
+            padding-top: 0.5rem;
         }
 
         .brand-header {
@@ -125,26 +126,27 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            font-size: 1.25rem;
             color: white;
             box-shadow: 0 8px 16px var(--coral-shadow);
         }
 
         .brand-text-block h1 {
-            font-size: 1.45rem;
+            font-size: 1.5rem;
             font-weight: 800;
             color: var(--text-dark);
             line-height: 1.15;
             letter-spacing: -0.02em;
         }
 
+        .brand-text-block h1 span {
+            color: var(--coral-primary);
+        }
+
         .brand-text-block p {
             font-size: 0.82rem;
             font-weight: 600;
-            color: var(--coral-primary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
         }
 
         .hero-tagline {
@@ -191,7 +193,14 @@
             border-radius: var(--radius-full);
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.45rem;
+        }
+
+        .pill-item svg {
+            width: 14px;
+            height: 14px;
+            color: var(--coral-primary);
+            flex-shrink: 0;
         }
 
         /* RIGHT SIDE: Clean White Registration Card */
@@ -306,89 +315,355 @@
             color: var(--text-dark);
         }
 
-        /* Photo Upload Dropzone */
-        .photo-dropzone {
-            border: 2px dashed var(--coral-border);
-            background: var(--peach-light);
-            border-radius: var(--radius-input);
-            padding: 1.25rem 1rem;
-            text-align: center;
-            cursor: pointer;
+        /* Password Live Security System */
+        .pwd-security-container {
+            margin-top: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+
+        .pwd-strength-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .pwd-strength-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .pwd-strength-label {
+            color: var(--text-muted);
+        }
+
+        .pwd-strength-val {
+            font-weight: 700;
+            color: var(--text-light);
+            transition: color 0.2s ease;
+        }
+
+        .pwd-strength-track {
+            height: 5px;
+            background: #e2e8f0;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .pwd-strength-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: var(--radius-full);
+            transition: width 0.25s ease, background-color 0.25s ease;
+        }
+
+        .pwd-requirements-box {
+            background: #f8fafc;
+            border: 1px solid var(--input-border);
+            border-radius: 10px;
+            padding: 0.6rem 0.8rem;
+        }
+
+        .pwd-req-title {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.35rem;
+        }
+
+        .pwd-req-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .pwd-req-item {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            transition: color 0.2s ease;
+        }
+
+        .pwd-req-item.satisfied {
+            color: #047857;
+            font-weight: 600;
+        }
+
+        .pwd-req-item .req-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 14px;
+            height: 14px;
+        }
+
+        .pwd-tips-box {
+            background: rgba(254, 242, 242, 0.45);
+            border: 1px solid rgba(254, 205, 211, 0.65);
+            border-radius: 10px;
+            padding: 0.55rem 0.8rem;
+        }
+
+        .pwd-tips-header {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--coral-hover);
+            margin-bottom: 0.25rem;
+        }
+
+        .pwd-tips-header svg {
+            flex-shrink: 0;
+            color: var(--coral-primary);
+        }
+
+        .pwd-tips-list {
+            list-style: disc;
+            padding-left: 1.1rem;
+            font-size: 0.71rem;
+            color: var(--text-body);
+            line-height: 1.35;
+            display: flex;
+            flex-direction: column;
+            gap: 0.12rem;
+        }
+
+        .pwd-field-error, .email-field-error {
+            font-size: 0.76rem;
+            color: #e11d48;
+            font-weight: 600;
+            line-height: 1.35;
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 8px;
+            padding: 0.4rem 0.65rem;
+            margin-top: 0.35rem;
+        }
+
+        /* 2-Column Fields Grid */
+        .fields-grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.15rem 1.25rem;
+        }
+
+        /* Side-by-Side Password Cards */
+        .pwd-cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-top: 0.65rem;
+        }
+
+        .photo-section-subtext {
+            font-size: 0.77rem;
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+            margin-bottom: 0.65rem;
+            line-height: 1.35;
+        }
+
+        /* Large Bordered Photo Capture Card */
+        .photo-capture-card {
+            border: 1.5px dashed var(--coral-border);
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 1.15rem;
+            display: grid;
+            grid-template-columns: 1.45fr 1fr;
+            gap: 1.25rem;
+            align-items: center;
             transition: all 0.2s ease;
+        }
+
+        .camera-preview-col {
+            width: 100%;
+        }
+
+        .camera-frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background: #0f172a;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--input-border);
+        }
+
+        .camera-frame video,
+        .camera-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .camera-placeholder {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 0.4rem;
+            gap: 0.45rem;
+            width: 100%;
+            height: 100%;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: background 0.2s;
         }
 
-        .photo-dropzone:hover, .photo-dropzone.dragover {
-            background: #ffe4e6;
-            border-color: var(--coral-primary);
+        .camera-placeholder:hover {
+            background: #fff1f2;
         }
 
-        .camera-badge {
-            width: 42px;
-            height: 42px;
+        .camera-badge-large {
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             background: #ffffff;
-            box-shadow: 0 4px 10px rgba(244, 63, 94, 0.15);
+            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--coral-primary);
-            margin-bottom: 0.2rem;
         }
 
-        .dropzone-main-text {
+        .placeholder-title {
             font-size: 0.88rem;
             font-weight: 700;
             color: var(--text-dark);
         }
 
-        .dropzone-sub-text {
-            font-size: 0.76rem;
+        .placeholder-subtitle {
+            font-size: 0.74rem;
             color: var(--text-muted);
         }
 
-        /* Photo Preview */
-        .preview-box {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            margin: 0.5rem auto 0;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid var(--coral-border);
-            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.1);
-        }
-
-        .preview-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .btn-clear-photo {
+        .camera-status-pill {
             position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(0, 0, 0, 0.65);
-            color: white;
-            border: none;
+            top: 8px;
+            left: 8px;
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(4px);
+            color: #ffffff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            padding: 0.22rem 0.55rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
+        }
+
+        .status-dot.live {
+            background: #22c55e;
+            box-shadow: 0 0 8px #22c55e;
+            animation: pulse-live 1.5s infinite;
+        }
+
+        .status-dot.captured {
+            background: #3b82f6;
+        }
+
+        .camera-info-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.65rem;
+        }
+
+        .guidelines-title {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .guidelines-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        .guidelines-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            font-size: 0.75rem;
+            color: var(--text-body);
+            font-weight: 500;
+        }
+
+        .guideline-icon {
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-camera-main {
+            width: 100%;
+            height: 42px;
+            background: linear-gradient(135deg, #fb7185 0%, var(--coral-primary) 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
-            transition: background 0.15s;
+            gap: 0.5rem;
+            box-shadow: 0 4px 14px var(--coral-shadow);
+            transition: all 0.2s ease;
+            margin-top: 0.35rem;
         }
 
-        .btn-clear-photo:hover {
-            background: var(--coral-primary);
+        .btn-camera-main:hover {
+            background: linear-gradient(135deg, var(--coral-primary) 0%, var(--coral-hover) 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px var(--coral-shadow);
+        }
+
+        .btn-camera-main.retake-mode {
+            background: #ffffff;
+            color: var(--text-dark);
+            border: 1.5px solid var(--input-border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .btn-camera-main.retake-mode:hover {
+            background: #f8fafc;
+            color: var(--coral-primary);
+            border-color: var(--coral-border);
         }
 
         /* Alert Banners */
@@ -486,11 +761,11 @@
         }
 
         /* Responsive Breakpoints */
-        @media (max-width: 992px) {
+        @media (max-width: 1040px) {
             .split-layout {
                 grid-template-columns: 1fr;
                 gap: 2rem;
-                max-width: 520px;
+                max-width: 680px;
             }
 
             .left-hero {
@@ -507,7 +782,7 @@
             }
 
             .illustration-card {
-                display: none; /* Hide large illustration on mobile to keep form priority */
+                display: none; /* Hide large illustration on mobile/tablet to keep form priority */
             }
 
             .feature-pills {
@@ -515,18 +790,38 @@
             }
 
             .register-card {
-                padding: 2rem 1.5rem;
+                padding: 2.25rem 2rem;
             }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 680px) {
             body {
-                padding: 1.25rem 1rem;
+                padding: 1rem 0.75rem;
             }
 
             .register-card {
-                padding: 1.5rem 1.15rem;
+                padding: 1.5rem 1rem;
                 border-radius: 18px;
+            }
+
+            .fields-grid-2col {
+                grid-template-columns: 1fr;
+                gap: 0.95rem;
+            }
+
+            .pwd-cards-grid {
+                grid-template-columns: 1fr;
+                gap: 0.95rem;
+            }
+
+            .photo-capture-card {
+                grid-template-columns: 1fr;
+                padding: 0.9rem;
+            }
+
+            .camera-frame {
+                max-width: 320px;
+                margin: 0 auto;
             }
 
             .card-heading {
@@ -545,13 +840,17 @@
     <div class="split-layout">
         <!-- LEFT COLUMN: Brand, Tagline, & Illustration -->
         <section class="left-hero">
-            <div class="brand-header">
-                <div class="brand-icon">EG</div>
+            <a href="/login" class="brand-header">
+                <div class="brand-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
                 <div class="brand-text-block">
-                    <h1>ExamGuard</h1>
+                    <h1>Exam<span>Guard</span></h1>
                     <p>Smart Examination Monitoring</p>
                 </div>
-            </div>
+            </a>
 
             <p class="hero-tagline">
                 A secure, fair, and reliable proctoring environment designed for seamless academic and certification assessments.
@@ -562,9 +861,31 @@
             </div>
 
             <div class="feature-pills">
-                <span class="pill-item">🔒 Biometric Identity Baseline</span>
-                <span class="pill-item">⚡ Integrity Analysis</span>
-                <span class="pill-item">🛡️ Secure Exam Proctoring</span>
+                <span class="pill-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+                        <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                        <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                        <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                        <path d="M9 9h.01"></path>
+                        <path d="M15 9h.01"></path>
+                    </svg>
+                    <span>Biometric Identity Baseline</span>
+                </span>
+                <span class="pill-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                    <span>Integrity Analysis</span>
+                </span>
+                <span class="pill-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="m9 12 2 2 4-4"></path>
+                    </svg>
+                    <span>Secure Exam Proctoring</span>
+                </span>
             </div>
         </section>
 
@@ -579,101 +900,264 @@
 
             <form id="register-form" onsubmit="handleRegister(event)" novalidate>
                 <div class="form-stack">
-                    <!-- Full Name -->
-                    <div class="field-group">
-                        <label class="field-label" for="full_name">
-                            <span>Full Name <span class="req">*</span></span>
-                        </label>
-                        <div class="input-wrapper">
-                            <span class="input-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                            </span>
-                            <input type="text" id="full_name" class="form-control" placeholder="Enter your full legal name" required autocomplete="name">
+                    <!-- 2-Column Fields Grid: Full Name & Email Address / Create Username & Create Password -->
+                    <div class="fields-grid-2col">
+                        <!-- Full Name -->
+                        <div class="field-group">
+                            <label class="field-label" for="full_name">
+                                <span>Full Name <span class="req">*</span></span>
+                            </label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                </span>
+                                <input type="text" id="full_name" class="form-control" placeholder="Enter your full name" required autocomplete="name">
+                            </div>
+                        </div>
+
+                        <!-- Email Address -->
+                        <div class="field-group">
+                            <label class="field-label" for="email">
+                                <span>Email Address <span class="req">*</span></span>
+                            </label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                        <polyline points="22,6 12,13 2,6"></polyline>
+                                    </svg>
+                                </span>
+                                <input type="email" id="email" class="form-control" placeholder="Enter your email address" required autocomplete="email">
+                            </div>
+                            <div id="email-field-error" class="email-field-error" style="display: none;" role="alert"></div>
+                        </div>
+
+                        <!-- Create Username -->
+                        <div class="field-group">
+                            <label class="field-label" for="username">
+                                <span>Create Username <span class="req">*</span></span>
+                            </label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="4"></circle>
+                                        <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path>
+                                    </svg>
+                                </span>
+                                <input type="text" id="username" class="form-control" placeholder="Choose a username" autocomplete="username">
+                            </div>
+                        </div>
+
+                        <!-- Create Password -->
+                        <div class="field-group">
+                            <label class="field-label" for="password">
+                                <span>Create Password <span class="req">*</span></span>
+                            </label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
+                                </span>
+                                <input type="password" id="password" class="form-control" placeholder="Create a strong password" required minlength="8" autocomplete="new-password" aria-describedby="pwd-security-container">
+                                <button type="button" class="toggle-pwd-btn" onclick="togglePasswordVisibility()" title="Toggle password visibility" aria-label="Toggle password visibility">
+                                    <svg id="pwd-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div id="pwd-field-error" class="pwd-field-error" style="display: none;" role="alert"></div>
                         </div>
                     </div>
 
-                    <!-- Email Address -->
-                    <div class="field-group">
-                        <label class="field-label" for="email">
-                            <span>Email Address <span class="req">*</span></span>
-                        </label>
-                        <div class="input-wrapper">
-                            <span class="input-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                    <polyline points="22,6 12,13 2,6"></polyline>
-                                </svg>
-                            </span>
-                            <input type="email" id="email" class="form-control" placeholder="candidate@example.com" required autocomplete="email">
+                    <!-- Live Password Security System (Side-by-Side) -->
+                    <div class="pwd-security-container" id="pwd-security-container">
+                        <!-- Strength Meter -->
+                        <div class="pwd-strength-wrap">
+                            <div class="pwd-strength-header">
+                                <span class="pwd-strength-label">Password Strength:</span>
+                                <span class="pwd-strength-val" id="pwd-strength-text" aria-live="polite">Neutral</span>
+                            </div>
+                            <div class="pwd-strength-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="pwd-progress-bar">
+                                <div class="pwd-strength-fill" id="pwd-strength-bar"></div>
+                            </div>
+                        </div>
+
+                        <!-- Side-by-Side Cards: Requirements & Security Tips -->
+                        <div class="pwd-cards-grid">
+                            <!-- LEFT: Password Requirements -->
+                            <div class="pwd-requirements-box">
+                                <div class="pwd-req-title">Password Requirements</div>
+                                <ul class="pwd-req-list" id="pwd-req-list">
+                                    <li class="pwd-req-item" id="req-len" data-satisfied="false">
+                                        <span class="req-icon" aria-hidden="true"></span>
+                                        <span class="req-text">At least 8 characters</span>
+                                    </li>
+                                    <li class="pwd-req-item" id="req-upper" data-satisfied="false">
+                                        <span class="req-icon" aria-hidden="true"></span>
+                                        <span class="req-text">At least one uppercase letter</span>
+                                    </li>
+                                    <li class="pwd-req-item" id="req-num" data-satisfied="false">
+                                        <span class="req-icon" aria-hidden="true"></span>
+                                        <span class="req-text">At least one number</span>
+                                    </li>
+                                    <li class="pwd-req-item" id="req-special" data-satisfied="false">
+                                        <span class="req-icon" aria-hidden="true"></span>
+                                        <span class="req-text">At least one special character</span>
+                                    </li>
+                                    <li class="pwd-req-item" id="req-common" data-satisfied="false">
+                                        <span class="req-icon" aria-hidden="true"></span>
+                                        <span class="req-text">Avoid common or easily guessable passwords</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- RIGHT: Password Security Tips (Compact) -->
+                            <div class="pwd-tips-box">
+                                <div class="pwd-tips-header">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                    </svg>
+                                    <span>Password Security Tips</span>
+                                </div>
+                                <ul class="pwd-tips-list">
+                                    <li>Use a unique password that you do not reuse on other websites.</li>
+                                    <li>Avoid names, birthdays, phone numbers, and common words.</li>
+                                    <li>Use a combination of uppercase letters, numbers, and special characters.</li>
+                                    <li>Longer passwords are generally harder to guess.</li>
+                                    <li>Never share your password with anyone.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Username (Optional) -->
-                    <div class="field-group">
-                        <label class="field-label" for="username">
-                            <span>Username <span style="color: var(--text-light); font-weight: normal;">(Optional)</span></span>
-                        </label>
-                        <div class="input-wrapper">
-                            <span class="input-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="4"></circle>
-                                    <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path>
-                                </svg>
-                            </span>
-                            <input type="text" id="username" class="form-control" placeholder="Choose a username" autocomplete="username">
-                        </div>
-                    </div>
-
-                    <!-- Password -->
-                    <div class="field-group">
-                        <label class="field-label" for="password">
-                            <span>Password <span class="req">*</span></span>
-                        </label>
-                        <div class="input-wrapper">
-                            <span class="input-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                                </svg>
-                            </span>
-                            <input type="password" id="password" class="form-control" placeholder="At least 8 characters" required minlength="8" autocomplete="new-password">
-                            <button type="button" class="toggle-pwd-btn" onclick="togglePasswordVisibility()" title="Toggle password visibility" aria-label="Toggle password visibility">
-                                <svg id="pwd-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Registration Photo Upload -->
-                    <div class="field-group">
+                    <!-- Registration Photo (Identity Baseline) Section -->
+                    <div class="field-group" style="margin-top: 0.15rem;">
                         <label class="field-label">
                             <span>Registration Photo (Identity Baseline) <span class="req">*</span></span>
                         </label>
-                        <div class="photo-dropzone" id="dropzone" onclick="document.getElementById('photo-input').click()">
-                            <div class="camera-badge">
-                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                                    <circle cx="12" cy="13" r="4"></circle>
-                                </svg>
+                        <p class="photo-section-subtext">
+                            Capture your live photo for identity verification. Look straight at the camera with a neutral expression.
+                        </p>
+
+                        <!-- Large Bordered Photo Capture Card -->
+                        <div class="photo-capture-card" id="photo-capture-card">
+                            <!-- Left: Large 4:3 Camera Frame -->
+                            <div class="camera-preview-col">
+                                <div class="camera-frame" id="camera-frame">
+                                    <!-- Placeholder (Initial State) -->
+                                    <div id="camera-placeholder" class="camera-placeholder" onclick="handleCameraAction()">
+                                        <div class="camera-badge-large">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                                <circle cx="12" cy="13" r="4"></circle>
+                                            </svg>
+                                        </div>
+                                        <div class="placeholder-title">Camera Inactive</div>
+                                        <div class="placeholder-subtitle">Click "Start Camera" to preview</div>
+                                    </div>
+
+                                    <!-- Live Webcam Video (Large 4:3) -->
+                                    <video id="webcam-video" autoplay playsinline muted style="display: none;"></video>
+
+                                    <!-- Captured Photo Preview (Exact Same Large 4:3 Size) -->
+                                    <img id="photo-captured-preview" src="" alt="Captured Baseline Photo" style="display: none;">
+
+                                    <!-- Top-left status badge -->
+                                    <div class="camera-status-pill" id="camera-status-pill" style="display: none;">
+                                        <span class="status-dot" id="status-dot"></span>
+                                        <span id="status-pill-text">LIVE</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="dropzone-main-text">Click to upload or drag & drop</div>
-                            <div class="dropzone-sub-text">JPG, JPEG, PNG (Max 5MB)</div>
-                            <input type="file" id="photo-input" accept="image/jpeg,image/png,image/jpg" style="display: none;" onchange="handlePhotoSelect(event)">
+
+                            <!-- Right: Photo Guidelines & Action Button -->
+                            <div class="camera-info-col">
+                                <div class="guidelines-title">Photo Guidelines</div>
+                                <ul class="guidelines-list">
+                                    <li>
+                                        <span class="guideline-icon">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                                <circle cx="12" cy="13" r="4"></circle>
+                                            </svg>
+                                        </span>
+                                        <span>Look straight at the camera</span>
+                                    </li>
+                                    <li>
+                                        <span class="guideline-icon">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <line x1="8" y1="15" x2="16" y2="15"></line>
+                                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                            </svg>
+                                        </span>
+                                        <span>Keep a neutral expression</span>
+                                    </li>
+                                    <li>
+                                        <span class="guideline-icon">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="5"></circle>
+                                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                                <line x1="21" y1="12" x2="23" y2="12"></line>
+                                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                            </svg>
+                                        </span>
+                                        <span>Ensure good lighting</span>
+                                    </li>
+                                    <li>
+                                        <span class="guideline-icon">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="6" cy="15" r="4"></circle>
+                                                <circle cx="18" cy="15" r="4"></circle>
+                                                <line x1="10" y1="15" x2="14" y2="15"></line>
+                                                <path d="M14 15a2 2 0 0 0-2-2 2 2 0 0 0-2 2"></path>
+                                                <path d="M2.5 13 5 7c.7-1.3 2-2 3.5-2h7c1.5 0 2.8.7 3.5 2l2.5 6"></path>
+                                            </svg>
+                                        </span>
+                                        <span>Remove glasses or hats</span>
+                                    </li>
+                                    <li>
+                                        <span class="guideline-icon">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+                                                <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                                                <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                                                <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                                                <circle cx="12" cy="12" r="4"></circle>
+                                            </svg>
+                                        </span>
+                                        <span>Your full face should be visible</span>
+                                    </li>
+                                </ul>
+
+                                <button type="button" id="btn-camera-main" class="btn-camera-main" onclick="handleCameraAction()">
+                                    <svg id="btn-camera-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                        <circle cx="12" cy="13" r="4"></circle>
+                                    </svg>
+                                    <span id="btn-camera-text">Start Camera</span>
+                                </button>
+                            </div>
                         </div>
 
-                        <!-- Selected Preview Wrapper -->
-                        <div id="preview-wrapper" style="display: none; text-align: center;">
-                            <div class="preview-box">
-                                <img id="photo-preview" src="" alt="Selected Registration Photo">
-                                <button type="button" class="btn-clear-photo" onclick="clearPhoto()" title="Remove image">✕</button>
-                            </div>
-                            <div id="photo-filename" style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;"></div>
-                        </div>
+                        <!-- Offscreen canvas for frame capture -->
+                        <canvas id="capture-canvas" style="display: none;"></canvas>
+                        <!-- Inline photo error alert -->
+                        <div id="photo-field-error" class="email-field-error" style="display: none;" role="alert"></div>
                     </div>
 
                     <!-- Submit Button -->
@@ -691,8 +1175,6 @@
     </div>
 
     <script>
-        let selectedPhotoBase64 = null;
-
         // Password visibility toggle
         let isPwdVisible = false;
         function togglePasswordVisibility() {
@@ -715,71 +1197,226 @@
             }
         }
 
-        // Drag and drop handlers
-        const dropzone = document.getElementById("dropzone");
-        ['dragenter', 'dragover'].forEach(name => {
-            dropzone.addEventListener(name, (e) => {
-                e.preventDefault();
-                dropzone.classList.add('dragover');
-            });
-        });
+        // --- Webcam Photo-Capture Flow ---
+        let cameraState = "idle"; // "idle" | "starting" | "live" | "captured"
+        let currentStream = null;
+        let selectedPhotoBase64 = null;
 
-        ['dragleave', 'drop'].forEach(name => {
-            dropzone.addEventListener(name, (e) => {
-                e.preventDefault();
-                dropzone.classList.remove('dragover');
-            });
-        });
+        const CAMERA_ICON_SVG = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+        `;
 
-        dropzone.addEventListener('drop', (e) => {
-            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                processFile(e.dataTransfer.files[0]);
+        const RETAKE_ICON_SVG = `
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 4v6h6"></path>
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+        `;
+
+        const SPINNER_HTML = `
+            <span class="spinner" style="display: inline-block; width: 15px; height: 15px; border-width: 2px;"></span>
+        `;
+
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => {
+                    try {
+                        track.stop();
+                    } catch (e) {
+                        console.error("Error stopping track:", e);
+                    }
+                });
+                currentStream = null;
             }
-        });
-
-        function handlePhotoSelect(event) {
-            if (event.target.files && event.target.files[0]) {
-                processFile(event.target.files[0]);
+            const video = document.getElementById("webcam-video");
+            if (video) {
+                video.srcObject = null;
             }
         }
 
-        function processFile(file) {
-            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-            if (!allowedTypes.includes(file.type.toLowerCase())) {
-                showAlert("Please select a valid image format (JPEG or PNG).", "error");
+        async function startCamera() {
+            const errorEl = document.getElementById("photo-field-error");
+            if (errorEl) {
+                errorEl.style.display = "none";
+                errorEl.textContent = "";
+            }
+            hideAlert();
+
+            const btnMain = document.getElementById("btn-camera-main");
+            const placeholder = document.getElementById("camera-placeholder");
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                const msg = "Unable to access camera: your browser does not support the camera API or requires a secure connection (HTTPS or localhost).";
+                console.error("navigator.mediaDevices.getUserMedia unavailable");
+                showAlert(msg, "error");
+                if (errorEl) {
+                    errorEl.textContent = msg;
+                    errorEl.style.display = "block";
+                }
                 return;
             }
 
-            const maxBytes = 5 * 1024 * 1024; // 5MB
-            if (file.size > maxBytes) {
-                showAlert("Photo file size must not exceed 5MB.", "error");
-                return;
+            // Set loading state: [ Starting Camera... ] and disable button temporarily
+            cameraState = "starting";
+            if (btnMain) {
+                btnMain.disabled = true;
+                btnMain.className = "btn-camera-main";
+                btnMain.innerHTML = `${SPINNER_HTML}<span>Starting Camera...</span>`;
             }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                selectedPhotoBase64 = e.target.result;
-                document.getElementById("photo-preview").src = selectedPhotoBase64;
-                document.getElementById("photo-filename").textContent = `${file.name} (${Math.round(file.size / 1024)} KB)`;
-                document.getElementById("preview-wrapper").style.display = "block";
-                document.getElementById("dropzone").style.display = "none";
-                hideAlert();
-            };
-            reader.readAsDataURL(file);
+            stopCamera();
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        facingMode: "user"
+                    }
+                });
+                currentStream = stream;
+                cameraState = "live";
+
+                const video = document.getElementById("webcam-video");
+                const previewImg = document.getElementById("photo-captured-preview");
+                const statusPill = document.getElementById("camera-status-pill");
+                const statusDot = document.getElementById("status-dot");
+                const statusText = document.getElementById("status-pill-text");
+
+                if (video) {
+                    video.srcObject = stream;
+                    video.style.display = "block";
+                    await video.play().catch(playErr => {
+                        console.error("Video playback error:", playErr);
+                    });
+                }
+
+                if (previewImg) previewImg.style.display = "none";
+                if (placeholder) placeholder.style.display = "none";
+
+                if (statusPill) {
+                    statusPill.style.display = "flex";
+                    if (statusDot) statusDot.className = "status-dot live";
+                    if (statusText) statusText.textContent = "LIVE";
+                }
+
+                if (btnMain) {
+                    btnMain.disabled = false;
+                    btnMain.className = "btn-camera-main";
+                    btnMain.innerHTML = `${CAMERA_ICON_SVG}<span>Capture Photo</span>`;
+                }
+            } catch (err) {
+                console.error("Camera access error:", err);
+                stopCamera();
+                cameraState = "idle";
+
+                let friendlyMsg = "Unable to start the camera. Please check your browser permissions.";
+                if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+                    friendlyMsg = "Camera access was denied. Please allow camera permission in your browser and try again.";
+                } else if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
+                    friendlyMsg = "No camera was detected on this device. Please connect a webcam and try again.";
+                } else if (err.name === "NotReadableError" || err.name === "TrackStartError") {
+                    friendlyMsg = "Camera is currently in use by another application or browser tab.";
+                }
+
+                showAlert(friendlyMsg, "error");
+                if (errorEl) {
+                    errorEl.textContent = friendlyMsg;
+                    errorEl.style.display = "block";
+                }
+
+                if (btnMain) {
+                    btnMain.disabled = false;
+                    btnMain.className = "btn-camera-main";
+                    btnMain.innerHTML = `${CAMERA_ICON_SVG}<span>Start Camera</span>`;
+                }
+            }
         }
 
-        function clearPhoto() {
+        function capturePhoto() {
+            const video = document.getElementById("webcam-video");
+            const canvas = document.getElementById("capture-canvas");
+            if (!video || !canvas) return;
+
+            const width = video.videoWidth || 640;
+            const height = video.videoHeight || 480;
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(video, 0, 0, width, height);
+
+            const dataUrl = canvas.toDataURL("image/jpeg", 0.92);
+            selectedPhotoBase64 = dataUrl;
+            cameraState = "captured";
+
+            // Stop webcam stream immediately to release camera hardware
+            stopCamera();
+
+            // Display captured photo preview at SAME LARGE SIZE
+            const previewImg = document.getElementById("photo-captured-preview");
+            if (previewImg) {
+                previewImg.src = dataUrl;
+                previewImg.style.display = "block";
+            }
+            if (video) video.style.display = "none";
+
+            const statusDot = document.getElementById("status-dot");
+            const statusText = document.getElementById("status-pill-text");
+            if (statusDot) statusDot.className = "status-dot captured";
+            if (statusText) statusText.textContent = "PHOTO CAPTURED";
+
+            const btnMain = document.getElementById("btn-camera-main");
+            if (btnMain) {
+                btnMain.disabled = false;
+                btnMain.className = "btn-camera-main retake-mode";
+                btnMain.innerHTML = `${RETAKE_ICON_SVG}<span>Retake Photo</span>`;
+            }
+
+            const errorEl = document.getElementById("photo-field-error");
+            if (errorEl) {
+                errorEl.style.display = "none";
+                errorEl.textContent = "";
+            }
+            hideAlert();
+        }
+
+        async function retakePhoto() {
             selectedPhotoBase64 = null;
-            document.getElementById("photo-input").value = "";
-            document.getElementById("preview-wrapper").style.display = "none";
-            document.getElementById("dropzone").style.display = "flex";
+            await startCamera();
         }
+
+        async function handleCameraAction() {
+            if (cameraState === "starting") return;
+            if (cameraState === "idle") {
+                await startCamera();
+            } else if (cameraState === "live") {
+                capturePhoto();
+            } else if (cameraState === "captured") {
+                await retakePhoto();
+            }
+        }
+
+        window.startCamera = startCamera;
+        window.capturePhoto = capturePhoto;
+        window.retakePhoto = retakePhoto;
+        window.handleCameraAction = handleCameraAction;
+        window.stopCamera = stopCamera;
+
+        window.addEventListener("beforeunload", stopCamera);
+        window.addEventListener("pagehide", stopCamera);
 
         function showAlert(msg, type = "error") {
             const el = document.getElementById("alert-box");
             el.className = `alert-box alert-${type}`;
+            const iconSvg = type === 'error'
+                ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
+                : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
             el.innerHTML = `
-                <span>${type === 'error' ? '⚠️' : '✅'}</span>
+                ${iconSvg}
                 <span>${msg}</span>
             `;
             el.style.display = "flex";
@@ -804,13 +1441,60 @@
                 return;
             }
 
-            if (password.length < 8) {
-                showAlert("Password must contain at least 8 characters.");
+            // Client-side strict Email Validation
+            const emailStatus = validateCandidateEmail(email);
+            if (!emailStatus.isValid) {
+                const emailErrorEl = document.getElementById("email-field-error");
+                const emailErrorMsg = "Please enter a valid email address.";
+                if (emailErrorEl) {
+                    emailErrorEl.textContent = emailErrorMsg;
+                    emailErrorEl.style.display = "block";
+                }
+                showAlert(emailErrorMsg, "error");
+                document.getElementById("email").focus();
+                return;
+            }
+
+            // Password Security Validation
+            const pwdStatus = evaluatePassword(password);
+            if (!pwdStatus.isMinSatisfied) {
+                const errorEl = document.getElementById("pwd-field-error");
+                let missing = [];
+                if (!pwdStatus.hasLength8) missing.push("at least 8 characters");
+                if (!pwdStatus.hasUpper) missing.push("at least one uppercase letter");
+                if (!pwdStatus.hasNumber) missing.push("at least one number");
+                if (!pwdStatus.hasSpecial) missing.push("at least one special character");
+                const errorMsg = `Password does not meet the minimum requirements: missing ${missing.join(", ")}.`;
+                errorEl.textContent = errorMsg;
+                errorEl.style.display = "block";
+                showAlert(errorMsg, "error");
+                document.getElementById("password").focus();
+                return;
+            }
+
+            if (password.toLowerCase().includes("password123")) {
+                const errorEl = document.getElementById("pwd-field-error");
+                const errorMsg = "Password is too common or easily guessable. Please choose a stronger password.";
+                if (errorEl) {
+                    errorEl.textContent = errorMsg;
+                    errorEl.style.display = "block";
+                }
+                showAlert(errorMsg, "error");
+                document.getElementById("password").focus();
                 return;
             }
 
             if (!selectedPhotoBase64) {
-                showAlert("Please upload your registration photo for identity baseline verification.");
+                const photoErrorEl = document.getElementById("photo-field-error");
+                const errorMsg = "Please capture your registration photo.";
+                if (photoErrorEl) {
+                    photoErrorEl.textContent = errorMsg;
+                    photoErrorEl.style.display = "block";
+                }
+                const photoCard = document.getElementById("photo-capture-card");
+                if (photoCard) {
+                    photoCard.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
                 return;
             }
 
@@ -838,6 +1522,7 @@
                 const data = await response.json();
 
                 if (response.ok) {
+                    stopCamera();
                     showAlert("Account created successfully! Redirecting to login...", "success");
                     setTimeout(() => {
                         window.location.href = "/login?registered=1";
@@ -855,6 +1540,191 @@
                 btnSpinner.style.display = "none";
             }
         }
+
+        // --- Live Password Security System ---
+        const NEUTRAL_ICON_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle></svg>`;
+        const CHECK_ICON_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+
+        const COMMON_PASSWORDS = [
+            "password", "12345678", "password123", "qwerty", "admin", "welcome",
+            "123456", "123456789", "letmein", "iloveyou", "admin123", "testing",
+            "abcdef", "11111111", "00000000"
+        ];
+
+        function evaluatePassword(pwd) {
+            const val = pwd || "";
+            const len = val.length;
+            const hasLength8 = len >= 8;
+            const hasUpper = /[A-Z]/.test(val);
+            const hasNumber = /[0-9]/.test(val);
+            const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(val);
+
+            const lower = val.toLowerCase();
+            const isCommon = COMMON_PASSWORDS.some(c => lower.includes(c)) || /^([a-zA-Z0-9])\1+$/.test(val);
+            const avoidCommon = len > 0 && !isCommon;
+
+            const isMinSatisfied = hasLength8 && hasUpper && hasNumber && hasSpecial;
+
+            let strengthLabel = "Neutral";
+            let strengthPercent = 0;
+            let strengthColor = "#94a3b8";
+
+            if (len === 0) {
+                strengthLabel = "Neutral";
+                strengthPercent = 0;
+                strengthColor = "#94a3b8";
+            } else if (isCommon || len < 5) {
+                strengthLabel = "Weak";
+                strengthPercent = 25;
+                strengthColor = "#ef4444";
+            } else if (!isMinSatisfied) {
+                const metCount = [hasLength8, hasUpper, hasNumber, hasSpecial].filter(Boolean).length;
+                if (metCount <= 2) {
+                    strengthLabel = "Weak";
+                    strengthPercent = 25;
+                    strengthColor = "#ef4444";
+                } else {
+                    strengthLabel = "Medium";
+                    strengthPercent = 50;
+                    strengthColor = "#f59e0b";
+                }
+            } else {
+                // Minimum requirements satisfied -> at least Strong
+                if (len >= 12 && avoidCommon) {
+                    strengthLabel = "Very Strong";
+                    strengthPercent = 100;
+                    strengthColor = "#059669";
+                } else {
+                    strengthLabel = "Strong";
+                    strengthPercent = 75;
+                    strengthColor = "#10b981";
+                }
+            }
+
+            return {
+                hasLength8,
+                hasUpper,
+                hasNumber,
+                hasSpecial,
+                avoidCommon,
+                isMinSatisfied,
+                strengthLabel,
+                strengthPercent,
+                strengthColor
+            };
+        }
+
+        function updatePasswordSecurityUI() {
+            const pwdInput = document.getElementById("password");
+            const val = pwdInput.value;
+            const res = evaluatePassword(val);
+
+            // Update Strength text & bar
+            const labelEl = document.getElementById("pwd-strength-text");
+            const barEl = document.getElementById("pwd-strength-bar");
+            const trackEl = document.getElementById("pwd-progress-bar");
+
+            if (val.length === 0) {
+                labelEl.textContent = "Neutral";
+                labelEl.style.color = "var(--text-light)";
+                barEl.style.width = "0%";
+                barEl.style.backgroundColor = "transparent";
+                trackEl.setAttribute("aria-valuenow", "0");
+            } else {
+                labelEl.textContent = res.strengthLabel;
+                labelEl.style.color = res.strengthColor;
+                barEl.style.width = `${res.strengthPercent}%`;
+                barEl.style.backgroundColor = res.strengthColor;
+                trackEl.setAttribute("aria-valuenow", String(res.strengthPercent));
+            }
+
+            function updateReqItem(id, satisfied) {
+                const item = document.getElementById(id);
+                if (!item) return;
+                const iconSpan = item.querySelector(".req-icon");
+                item.dataset.satisfied = satisfied ? "true" : "false";
+                if (satisfied) {
+                    item.classList.add("satisfied");
+                    iconSpan.innerHTML = CHECK_ICON_SVG;
+                } else {
+                    item.classList.remove("satisfied");
+                    iconSpan.innerHTML = NEUTRAL_ICON_SVG;
+                }
+            }
+
+            updateReqItem("req-len", res.hasLength8);
+            updateReqItem("req-upper", res.hasUpper);
+            updateReqItem("req-num", res.hasNumber);
+            updateReqItem("req-special", res.hasSpecial);
+            updateReqItem("req-common", res.avoidCommon);
+
+            // Hide inline field error once minimum requirements are met
+            const errorEl = document.getElementById("pwd-field-error");
+            if (res.isMinSatisfied && errorEl && errorEl.style.display !== "none") {
+                errorEl.style.display = "none";
+                errorEl.textContent = "";
+            }
+        }
+
+        const RECOGNIZED_EMAIL_DOMAINS = new Set([
+            "gmail.com",
+            "outlook.com",
+            "hotmail.com",
+            "live.com",
+            "yahoo.com",
+            "yahoo.co.in",
+            "icloud.com",
+            "proton.me",
+            "protonmail.com"
+        ]);
+
+        const LOCAL_PART_REGEX = /^[a-zA-Z0-9_+\-]+(?:\.[a-zA-Z0-9_+\-]+)*$/;
+
+        function validateCandidateEmail(email) {
+            if (!email || typeof email !== "string") return { isValid: false };
+            const trimmed = email.trim();
+            if (!trimmed || trimmed.length > 254 || trimmed.includes(" ")) return { isValid: false };
+            if ((trimmed.match(/@/g) || []).length !== 1) return { isValid: false };
+
+            const parts = trimmed.split("@");
+            const localPart = parts[0];
+            const domainPart = parts[1].toLowerCase();
+
+            if (!localPart || !domainPart) return { isValid: false };
+            if (localPart.includes("..") || domainPart.includes("..")) return { isValid: false };
+            if (localPart.startsWith(".") || localPart.endsWith(".")) return { isValid: false };
+            if (!LOCAL_PART_REGEX.test(localPart)) return { isValid: false };
+            if (!RECOGNIZED_EMAIL_DOMAINS.has(domainPart)) return { isValid: false };
+
+            return { isValid: true, normalized: `${localPart.toLowerCase()}@${domainPart}` };
+        }
+
+        function handleEmailInput() {
+            const emailVal = document.getElementById("email").value.trim();
+            const emailErrorEl = document.getElementById("email-field-error");
+            if (validateCandidateEmail(emailVal).isValid) {
+                if (emailErrorEl) {
+                    emailErrorEl.style.display = "none";
+                    emailErrorEl.textContent = "";
+                }
+            }
+        }
+
+        function handleEmailBlur() {
+            const emailVal = document.getElementById("email").value.trim();
+            const emailErrorEl = document.getElementById("email-field-error");
+            if (emailVal.length > 0 && !validateCandidateEmail(emailVal).isValid) {
+                if (emailErrorEl) {
+                    emailErrorEl.textContent = "Please enter a valid email address.";
+                    emailErrorEl.style.display = "block";
+                }
+            }
+        }
+
+        document.getElementById("email").addEventListener("input", handleEmailInput);
+        document.getElementById("email").addEventListener("blur", handleEmailBlur);
+        document.getElementById("password").addEventListener("input", updatePasswordSecurityUI);
+        window.addEventListener("DOMContentLoaded", updatePasswordSecurityUI);
     </script>
 </body>
 </html>

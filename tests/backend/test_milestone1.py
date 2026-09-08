@@ -23,7 +23,7 @@ def client(app):
     return app.test_client()
 
 
-def register(client, email="ada@example.test", password="safe-password"):
+def register(client, email="ada@example.test", password="Safe-password-123!"):
     return client.post("/api/auth/register", json={"full_name": "Ada Candidate", "email": email, "password": password})
 
 
@@ -37,6 +37,16 @@ def test_database_schema_and_foreign_key(app):
 
 
 def test_registration_duplicates_and_password_protection(app, client):
+    # Test invalid passwords
+    assert client.post("/api/auth/register", json={"full_name": "P1", "email": "p1@example.test", "password": "Short1!"}).status_code == 400
+    assert client.post("/api/auth/register", json={"full_name": "P2", "email": "p2@example.test", "password": "lowercaseonly123!"}).status_code == 400
+    assert client.post("/api/auth/register", json={"full_name": "P3", "email": "p3@example.test", "password": "NoNumberHere!"}).status_code == 400
+    assert client.post("/api/auth/register", json={"full_name": "P4", "email": "p4@example.test", "password": "NoSpecialChar123"}).status_code == 400
+
+    # Test valid password WITHOUT lowercase (lowercase not required)
+    res_nolower = client.post("/api/auth/register", json={"full_name": "No Lower", "email": "nolower@example.test", "password": "ALLUPPERCASE123!"})
+    assert res_nolower.status_code == 201
+
     response = register(client)
     assert response.status_code == 201
     candidate = response.get_json()["candidate"]
@@ -44,7 +54,7 @@ def test_registration_duplicates_and_password_protection(app, client):
     assert register(client).status_code == 409
     with app.app_context():
         row = get_db().execute("SELECT password_hash FROM candidates WHERE email = ?", ("ada@example.test",)).fetchone()
-        assert row["password_hash"] != "safe-password"
+        assert row["password_hash"] != "Safe-password-123!"
         assert row["password_hash"].startswith("scrypt:") or row["password_hash"].startswith("pbkdf2:")
 
 
@@ -55,7 +65,7 @@ def test_health_and_saved_registration_photo_path(app, client):
             np.zeros((10, 10, 3), dtype=np.uint8), app.config["REGISTRATION_PHOTO_DIR"]
         )
     response = client.post("/api/auth/register", json={
-        "full_name": "Photo Candidate", "email": "photo@example.test", "password": "safe-password",
+        "full_name": "Photo Candidate", "email": "photo@example.test", "password": "Safe-password-123!",
         "registration_photo_path": photo_path,
     })
     assert response.status_code == 201
@@ -64,14 +74,14 @@ def test_health_and_saved_registration_photo_path(app, client):
 
 def test_login_credentials(client):
     register(client)
-    assert client.post("/api/auth/login", json={"email": "ada@example.test", "password": "safe-password"}).status_code == 200
+    assert client.post("/api/auth/login", json={"email": "ada@example.test", "password": "Safe-password-123!"}).status_code == 200
     assert client.post("/api/auth/login", json={"email": "ada@example.test", "password": "incorrect"}).status_code == 401
-    assert client.post("/api/auth/login", json={"email": "unknown@example.test", "password": "safe-password"}).status_code == 401
+    assert client.post("/api/auth/login", json={"email": "unknown@example.test", "password": "Safe-password-123!"}).status_code == 401
 
 
 def test_session_lifecycle_and_candidate_ownership(client):
     register(client, "one@example.test")
-    client.post("/api/auth/login", json={"email": "one@example.test", "password": "safe-password"})
+    client.post("/api/auth/login", json={"email": "one@example.test", "password": "Safe-password-123!"})
     created = client.post("/api/exam-sessions", json={"exam_identifier": "M1-DEMO"})
     session_id = created.get_json()["session"]["id"]
     assert created.get_json()["session"]["status"] == "scheduled"
@@ -84,5 +94,5 @@ def test_session_lifecycle_and_candidate_ownership(client):
 
     other = client.application.test_client()
     register(other, "two@example.test")
-    other.post("/api/auth/login", json={"email": "two@example.test", "password": "safe-password"})
+    other.post("/api/auth/login", json={"email": "two@example.test", "password": "Safe-password-123!"})
     assert other.get(f"/api/exam-sessions/{session_id}").status_code == 403

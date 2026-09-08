@@ -16,9 +16,15 @@ def create_app(test_config=None):
     from .routes.auth_routes import auth_bp
     from .routes.exam_routes import exam_bp
     from .routes.monitoring_routes import monitoring_bp
+    from .routes.admin_routes import admin_bp
     app.register_blueprint(auth_bp)
     app.register_blueprint(exam_bp)
     app.register_blueprint(monitoring_bp)
+    app.register_blueprint(admin_bp)
+
+    with app.app_context():
+        from .services.admin_service import seed_default_admin_if_empty
+        seed_default_admin_if_empty()
 
     @app.get("/api/health")
     def health():
@@ -80,6 +86,19 @@ def create_app(test_config=None):
         from flask import send_from_directory
         from .config import PROJECT_ROOT
         return send_from_directory(PROJECT_ROOT / "frontend" / "static", "exam_client.html")
+
+    # --- Proctor & Admin Portal Page Routes ---
+    @app.get("/admin/login")
+    def admin_login_page():
+        from flask import send_from_directory
+        from .config import PROJECT_ROOT
+        return send_from_directory(PROJECT_ROOT / "frontend" / "static", "admin_login.html")
+
+    @app.get("/admin")
+    def admin_dashboard_page():
+        from flask import send_from_directory
+        from .config import PROJECT_ROOT
+        return send_from_directory(PROJECT_ROOT / "frontend" / "static", "admin_dashboard.html")
 
     @app.get("/frontend/static/<path:filename>")
     def static_files(filename):

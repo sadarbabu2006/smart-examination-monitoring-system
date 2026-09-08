@@ -34,7 +34,7 @@ def test_registration_with_base64_photo(client):
     res = client.post("/api/auth/register", json={
         "full_name": "Frontend Candidate",
         "email": "frontend@examguard.test",
-        "password": "strong-password-123",
+        "password": "Safe-password-123!",
         "photo_base64": b64_photo
     })
     assert res.status_code == 201
@@ -49,7 +49,7 @@ def test_registration_with_multipart_photo(client):
     data = {
         "full_name": "Multipart Candidate",
         "email": "multipart@examguard.test",
-        "password": "strong-password-123",
+        "password": "Safe-password-123!",
         "registration_photo": (io.BytesIO(buf.tobytes()), "photo.png")
     }
     res = client.post("/api/auth/register", data=data, content_type="multipart/form-data")
@@ -69,11 +69,11 @@ def test_auth_me_and_logout_lifecycle(client):
     client.post("/api/auth/register", json={
         "full_name": "Auth User",
         "email": "authuser@examguard.test",
-        "password": "safe-password-123"
+        "password": "Safe-password-123!"
     })
     login_res = client.post("/api/auth/login", json={
         "email": "authuser@examguard.test",
-        "password": "safe-password-123"
+        "password": "Safe-password-123!"
     })
     assert login_res.status_code == 200
 
@@ -97,11 +97,11 @@ def test_list_candidate_sessions(client):
     client.post("/api/auth/register", json={
         "full_name": "Session Candidate",
         "email": "sess@examguard.test",
-        "password": "safe-password-123"
+        "password": "Safe-password-123!"
     })
     client.post("/api/auth/login", json={
         "email": "sess@examguard.test",
-        "password": "safe-password-123"
+        "password": "Safe-password-123!"
     })
 
     # Initially empty
@@ -135,11 +135,11 @@ def test_monitoring_process_frame_endpoint_and_absence_persistence(client, app):
     client.post("/api/auth/register", json={
         "full_name": "Monitor User",
         "email": "mon@examguard.test",
-        "password": "safe-password-123"
+        "password": "Safe-password-123!"
     })
     client.post("/api/auth/login", json={
         "email": "mon@examguard.test",
-        "password": "safe-password-123"
+        "password": "Safe-password-123!"
     })
     created = client.post("/api/exam-sessions", json={"exam_identifier": "PROCTOR-EXAM"})
     session_id = created.get_json()["session"]["id"]
@@ -165,12 +165,12 @@ def test_auth_photo_serving(client):
     client.post("/api/auth/register", json={
         "full_name": "Photo User",
         "email": "photouser@examguard.test",
-        "password": "safe-password-123",
+        "password": "Safe-password-123!",
         "photo_base64": b64_photo
     })
     client.post("/api/auth/login", json={
         "email": "photouser@examguard.test",
-        "password": "safe-password-123"
+        "password": "Safe-password-123!"
     })
 
     # Fetch photo

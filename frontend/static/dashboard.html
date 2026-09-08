@@ -6,7 +6,7 @@
     <title>Candidate Dashboard - ExamGuard Smart Examination Monitoring</title>
     <style>
         /* ==========================================================================
-           1. Design System & High-Visibility Border Tokens
+           1. Design System & Light Theme Tokens (Refined for High Border Visibility)
            ========================================================================== */
         :root {
             /* 6-Tier Unified Typography Scale */
@@ -17,27 +17,28 @@
             --font-lg: 1.25rem;    /* 20px - Card & section headers (H2) */
             --font-xl: 1.5rem;     /* 24px - Page main title (H1) */
 
-            /* High-Visibility Card Border & Separator Colors */
-            --border-card: #f1d6d2;      /* Distinct, visible peach-coral card border */
-            --border-subtle: #f8e4e1;    /* Subtle inner separators */
-            --bg-page: #faf5f2;          /* Light warm peach background */
-            --bg-card: #ffffff;          /* White elevated cards */
-            --bg-hover: #fff1f2;
+            /* High-Visibility Light Theme Borders & Backgrounds */
+            --border-card: #d5bcb7;      /* Distinct, visible rose-gray/pink card border */
+            --border-subtle: #e5d0cc;    /* Inner row/check separators */
+            --bg-page: #e7ddd4;          /* Rich, warm sand/linen background matching reference image */
+            --bg-card: #ffffff;          /* Pure white elevated cards */
+            --bg-hover: #fff0f2;         /* Soft rose hover state */
             
             /* Text Tokens */
-            --text-dark: #0f172a;        /* Primary headings, titles, values */
-            --text-body: #334155;        /* Body copy, instructions */
-            --text-muted: #64748b;       /* Secondary descriptions, table headers */
-            --coral-primary: #f43f5e;    /* Brand accent, active states, key CTAs */
-            --coral-hover: #e11d48;      /* Button hover state */
-            --coral-light: #fff1f2;
-            --coral-border: #fecdd3;
-            --coral-shadow: rgba(244, 63, 94, 0.22);
+            --text-dark: #172033;        /* Dark navy/charcoal for strong legible contrast */
+            --text-body: #334155;        /* Clean readable body text */
+            --text-muted: #64748b;       /* Muted blue-gray secondary text */
+            --coral-primary: #ff4f6f;    /* Vibrant coral/pink primary accent */
+            --coral-hover: #e13254;      /* Button hover state */
+            --coral-light: #fff1f3;      /* Active navigation / chip background */
+            --coral-border: #fecdd3;     /* Subtle coral border */
+            --coral-shadow: rgba(255, 79, 111, 0.22);
 
+            /* Status Tokens */
             --success-text: #047857;     /* Ready / active states */
             --warning-text: #b45309;     /* Scheduled / pending states */
             --info-text: #1d4ed8;        /* Submitted / historical states */
-            --danger-text: #dc2626;      /* Sign out / alerts */
+            --danger-text: #e11d48;      /* Sign out / alerts */
 
             --success-bg: #ecfdf5;
             --success-border: #a7f3d0;
@@ -56,9 +57,9 @@
             --radius-lg: 16px;
             --radius-full: 9999px;
 
-            --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.02);
-            --shadow-md: 0 8px 24px rgba(225, 112, 85, 0.06);
-            --shadow-btn: 0 6px 16px var(--coral-shadow);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.03);
+            --shadow-card: 0 4px 18px rgba(225, 112, 85, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+            --shadow-btn: 0 4px 14px rgba(255, 79, 111, 0.25);
         }
 
         * {
@@ -107,7 +108,7 @@
         .brand-icon-box {
             width: 38px;
             height: 38px;
-            background: linear-gradient(135deg, #fb7185 0%, var(--coral-primary) 100%);
+            background: linear-gradient(135deg, #ff718a 0%, var(--coral-primary) 100%);
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -249,7 +250,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: var(--bg-page);
+            background: #ffffff;
             border: 1px solid var(--border-card);
             display: flex;
             align-items: center;
@@ -257,11 +258,12 @@
             color: var(--text-body);
             cursor: pointer;
             position: relative;
-            transition: background 0.15s ease;
+            transition: all 0.15s ease;
         }
 
         .btn-icon:hover {
-            background: #f1f5f9;
+            border-color: var(--coral-primary);
+            color: var(--coral-primary);
         }
 
         .notif-dot {
@@ -282,7 +284,7 @@
             gap: 0.75rem;
             padding: 0.3rem 0.85rem 0.3rem 0.4rem;
             border-radius: var(--radius-full);
-            background: var(--bg-page);
+            background: #ffffff;
             border: 1px solid var(--border-card);
             cursor: pointer;
             transition: border-color 0.15s ease, background 0.15s ease;
@@ -309,7 +311,7 @@
             color: #c2410c;
             font-size: var(--font-xs);
             overflow: hidden;
-            box-shadow: 0 2px 6px rgba(244, 63, 94, 0.12);
+            box-shadow: 0 2px 6px rgba(255, 79, 111, 0.12);
         }
 
         .user-avatar-small img {
@@ -343,7 +345,7 @@
         }
 
         /* ==========================================================================
-           4. Card Containers with Visible 1px Borders
+           4. Card Containers with Visible Light Borders
            ========================================================================== */
         .content-container {
             padding: 2rem 2.25rem 3.5rem;
@@ -363,7 +365,7 @@
             border: 1px solid var(--border-card);
             border-radius: var(--radius-lg);
             padding: 1.6rem 1.75rem;
-            box-shadow: var(--shadow-md);
+            box-shadow: var(--shadow-card);
             display: flex;
             flex-direction: column;
         }
@@ -387,7 +389,7 @@
 
         /* Buttons */
         .btn-primary {
-            background: linear-gradient(135deg, #fb7185 0%, var(--coral-primary) 100%);
+            background: var(--coral-primary);
             color: white;
             border: none;
             border-radius: var(--radius-md);
@@ -400,19 +402,19 @@
             align-items: center;
             gap: 0.5rem;
             text-decoration: none;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
         }
 
         .btn-primary:hover {
-            background: linear-gradient(135deg, var(--coral-primary) 0%, var(--coral-hover) 100%);
+            background: var(--coral-hover);
             transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(244, 63, 94, 0.35);
+            box-shadow: 0 6px 18px rgba(255, 79, 111, 0.35);
         }
 
         .btn-secondary {
-            background: var(--bg-page);
-            border: 1.5px solid var(--border-card);
-            color: var(--text-body);
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            color: var(--text-dark);
             border-radius: var(--radius-md);
             font-size: var(--font-sm);
             font-weight: 600;
@@ -518,10 +520,10 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 0.85rem;
-            background: var(--bg-page);
+            background: #faf6f4;
             padding: 1rem;
             border-radius: var(--radius-md);
-            border: 1px solid var(--border-card);
+            border: 1px solid var(--border-subtle);
         }
 
         .meta-pill-item {
@@ -581,10 +583,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem 1rem;
+            padding: 0.85rem 1rem;
             border-radius: var(--radius-md);
-            background: var(--bg-page);
-            border: 1px solid var(--border-card);
+            background: #faf6f4;
+            border: 1px solid var(--border-subtle);
             transition: all 0.15s ease;
         }
 
@@ -600,18 +602,12 @@
         }
 
         .readiness-icon {
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-
-        .readiness-icon svg {
-            display: block;
             flex-shrink: 0;
         }
 
@@ -629,14 +625,14 @@
         }
 
         .btn-check-pill {
-            padding: 0.35rem 0.85rem;
+            padding: 0.35rem 0.9rem;
             border-radius: var(--radius-full);
             font-size: var(--font-xs);
             font-weight: 700;
             cursor: pointer;
             border: 1px solid var(--border-card);
-            background: var(--bg-card);
-            color: var(--text-body);
+            background: #ffffff;
+            color: var(--text-dark);
             transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
@@ -650,7 +646,7 @@
         }
 
         /* ==========================================================================
-           6. Statistics Row with Visible Borders
+           6. Statistics Row with Visible Light Borders
            ========================================================================== */
         .stats-grid {
             display: grid;
@@ -663,7 +659,7 @@
             border: 1px solid var(--border-card);
             border-radius: var(--radius-lg);
             padding: 1.3rem 1.4rem;
-            box-shadow: var(--shadow-md);
+            box-shadow: var(--shadow-card);
             display: flex;
             align-items: center;
             gap: 1.1rem;
@@ -672,6 +668,7 @@
 
         .stat-card:hover {
             transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(225, 112, 85, 0.08);
         }
 
         .stat-icon-wrapper {
@@ -681,12 +678,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: var(--font-lg);
-            flex-shrink: 0;
-        }
-
-        .stat-icon-wrapper svg {
-            display: block;
             flex-shrink: 0;
         }
 
@@ -862,7 +853,7 @@
             border: 1px solid var(--border-card);
             border-radius: var(--radius-lg);
             padding: 1.6rem 1.75rem;
-            box-shadow: var(--shadow-md);
+            box-shadow: var(--shadow-card);
             display: flex;
             flex-direction: column;
         }
@@ -909,7 +900,6 @@
             border: 1px solid var(--coral-border);
         }
 
-
         .troubleshoot-box {
             display: flex;
             flex-direction: column;
@@ -917,10 +907,10 @@
         }
 
         .troubleshoot-row {
-            padding: 0.7rem 0.85rem;
+            padding: 0.75rem 0.9rem;
             border-radius: var(--radius-md);
-            background: var(--bg-page);
-            border: 1px solid var(--border-card);
+            background: #faf6f4;
+            border: 1px solid var(--border-subtle);
         }
 
         .troubleshoot-row strong {
@@ -948,7 +938,7 @@
             border: 1px solid var(--border-card);
             border-radius: var(--radius-lg);
             padding: 2.75rem;
-            box-shadow: var(--shadow-md);
+            box-shadow: var(--shadow-card);
             display: flex;
             align-items: center;
             gap: 3rem;
@@ -968,7 +958,7 @@
             font-size: 2.75rem;
             color: #c2410c;
             overflow: hidden;
-            box-shadow: 0 6px 18px rgba(244, 63, 94, 0.12);
+            box-shadow: 0 6px 18px rgba(255, 79, 111, 0.12);
         }
 
         .profile-photo-container img {
@@ -1004,11 +994,138 @@
             font-weight: 700;
         }
 
+        /* ==========================================================================
+           10. Dedicated Academic Results Tab Page
+           ========================================================================== */
+        .results-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .result-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 1.6rem 1.75rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            gap: 1.15rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .result-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.01em;
+        }
+
+        .result-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+            flex-wrap: wrap;
+        }
+
+        .academic-status-pill {
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 0.28rem 0.65rem;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            letter-spacing: 0.02em;
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+
+        .result-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.85rem;
+        }
+
+        @media (max-width: 900px) {
+            .result-metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 540px) {
+            .result-metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .result-metric-card {
+            background: #faf6f4;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 0.85rem 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 0.35rem;
+        }
+
+        .metric-label {
+            font-size: var(--font-xs);
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.03em;
+        }
+
+        .metric-main-value {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+
+        .metric-sub {
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+        }
+
+        .academic-notice-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            font-size: var(--font-xs);
+            color: #475569;
+            line-height: 1.45;
+        }
+
         /* Modal Styles */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.5);
             backdrop-filter: blur(4px);
             display: none;
             align-items: center;
@@ -1048,14 +1165,13 @@
             padding: 0 1rem;
             font-size: var(--font-sm);
             color: var(--text-dark);
-            background: var(--bg-page);
+            background: #ffffff;
             outline: none;
             margin-bottom: 1.5rem;
         }
 
         .form-select:focus {
             border-color: var(--coral-primary);
-            background: white;
         }
 
         .modal-actions {
@@ -1315,7 +1431,7 @@
                         <!-- 1. Camera Access -->
                         <div class="readiness-item" id="row-check-camera">
                             <div class="readiness-info">
-                                <div class="readiness-icon" style="background: #ffe4e6; color: #f43f5e;">
+                                <div class="readiness-icon" style="background: #ffe4e6; color: #ff4f6f; border: 1px solid #fecdd3;">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
                                         <circle cx="12" cy="13" r="3"></circle>
@@ -1334,7 +1450,7 @@
                         <!-- 2. Browser Compatibility -->
                         <div class="readiness-item" id="row-check-browser">
                             <div class="readiness-info">
-                                <div class="readiness-icon" style="background: #eff6ff; color: #2563eb;">
+                                <div class="readiness-icon" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <circle cx="12" cy="12" r="10"></circle>
                                         <line x1="2" y1="12" x2="22" y2="12"></line>
@@ -1354,7 +1470,7 @@
                         <!-- 3. Internet Connection -->
                         <div class="readiness-item" id="row-check-net">
                             <div class="readiness-info">
-                                <div class="readiness-icon" style="background: #ecfdf5; color: #059669;">
+                                <div class="readiness-icon" style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
                                         <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
@@ -1377,9 +1493,10 @@
                     <div style="margin-top: 1.15rem;">
                         <button type="button" class="btn-secondary" id="btn-run-all-checks" onclick="runAllSystemChecks()" style="width: 100%; justify-content: center; padding: 0.75rem 1rem; font-weight: 700;">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="23 4 23 10 17 10"></polyline>
-                                <polyline points="1 20 1 14 7 14"></polyline>
-                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                <path d="M3 3v5h5"></path>
+                                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
+                                <path d="M16 21h5v-5"></path>
                             </svg>
                             <span>Run All Checks</span>
                         </button>
@@ -1390,7 +1507,7 @@
             <!-- Row of 4 Statistics Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon-wrapper" style="background: #fffbeb; color: #d97706;">
+                    <div class="stat-icon-wrapper" style="background: #fff1f2; color: #ff4f6f; border: 1px solid #ffe4e6;">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
                             <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -1405,7 +1522,7 @@
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-icon-wrapper" style="background: #ecfdf5; color: #059669;">
+                    <div class="stat-icon-wrapper" style="background: #ecfdf5; color: #059669; border: 1px solid #d1fae5;">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                         </svg>
@@ -1417,10 +1534,10 @@
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-icon-wrapper" style="background: #eff6ff; color: #2563eb;">
+                    <div class="stat-icon-wrapper" style="background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe;">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="m9 12 2 2 4-4"></path>
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
                         </svg>
                     </div>
                     <div class="stat-meta">
@@ -1430,12 +1547,11 @@
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-icon-wrapper" style="background: #fce7f3; color: #db2777;">
+                    <div class="stat-icon-wrapper" style="background: #fdf2f8; color: #db2777; border: 1px solid #fce7f3;">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 3v18h18"></path>
-                            <path d="M18 17V9"></path>
-                            <path d="M13 17V5"></path>
-                            <path d="M8 17v-3"></path>
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
                         </svg>
                     </div>
                     <div class="stat-meta">
@@ -1457,7 +1573,9 @@
                             </svg>
                             Recent Examinations
                         </h2>
-                        <span class="status-badge badge-submitted">Session History</span>
+                        <span class="status-badge" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; font-size: var(--font-xs); padding: 0.35rem 0.85rem;">
+                            Session History
+                        </span>
                     </div>
 
                     <div class="exams-table-wrap">
@@ -1494,7 +1612,7 @@
                             </svg>
                             Important Instructions
                         </h2>
-                        <button class="btn-secondary" style="padding: 0.35rem 0.75rem; font-size: var(--font-xs);" onclick="switchView('instructions', event)">
+                        <button class="btn-secondary" style="padding: 0.35rem 0.85rem; font-size: var(--font-xs); border: 1px solid var(--border-card); background: #ffffff; color: var(--text-dark); font-weight: 600;" onclick="switchView('instructions', event)">
                             View All →
                         </button>
                     </div>
@@ -1759,7 +1877,12 @@
                 <div class="profile-page-card">
                     <div class="profile-photo-container" id="profile-page-photo-box">
                         <img id="profile-page-photo" src="/api/auth/photo" alt="Registration Photo" onerror="handleProfilePagePhotoError()">
-                        <div id="profile-page-initials" style="display: none;"></div>
+                        <div id="profile-page-initials" style="display: none;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
                     </div>
 
                     <div class="profile-details-grid">
@@ -1793,6 +1916,31 @@
                             <strong class="field-val" style="color: var(--success-text);">Active</strong>
                         </div>
                     </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- VIEW 4: Dedicated Academic Results View -->
+        <main class="content-container" id="results-view" style="display: none; flex-direction: column; gap: 1.5rem;">
+            <div class="card" style="padding: 2rem;">
+                <div class="card-header-row" style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-card); padding-bottom: 1.25rem;">
+                    <div>
+                        <h2 style="font-size: var(--font-xl); color: var(--text-dark); font-weight: 800;">Examination Results</h2>
+                        <p style="color: var(--text-muted); font-size: var(--font-sm); margin-top: 0.2rem;">View academic evaluation outcomes, marks, and assessment performance for your submitted examinations.</p>
+                    </div>
+                    <button class="btn-secondary" onclick="fetchCandidateDataAndSessions(true)" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        <span>Refresh Results</span>
+                    </button>
+                </div>
+
+                <!-- Results Content List -->
+                <div id="results-list" class="results-grid" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                    <!-- Dynamically populated by renderResultsView() -->
                 </div>
             </div>
         </main>
@@ -1840,6 +1988,8 @@
                 switchView('profile');
             } else if (window.location.pathname.includes("/instructions") || window.location.hash === "#instructions") {
                 switchView('instructions');
+            } else if (window.location.pathname.includes("/results") || window.location.hash === "#results") {
+                switchView('results');
             } else {
                 switchView('dashboard');
             }
@@ -1857,17 +2007,19 @@
             }
         }
 
-        // View Switching (Supports 'dashboard', 'profile', and 'instructions')
+        // View Switching (Supports 'dashboard', 'profile', 'instructions', and 'results')
         function switchView(viewName, event) {
             if (event) event.preventDefault();
 
             const dashboardView = document.getElementById("dashboard-view");
             const profileView = document.getElementById("profile-view");
             const instructionsView = document.getElementById("instructions-view");
+            const resultsView = document.getElementById("results-view");
 
             const navDashboard = document.getElementById("nav-dashboard");
             const navProfile = document.getElementById("nav-profile");
             const navInstructions = document.getElementById("nav-instructions");
+            const navResults = document.getElementById("nav-results");
 
             const welcomeHeading = document.getElementById("welcome-heading");
             const welcomeSubtext = document.getElementById("welcome-subtext");
@@ -1877,11 +2029,13 @@
             if (navDashboard) navDashboard.classList.remove("active");
             if (navProfile) navProfile.classList.remove("active");
             if (navInstructions) navInstructions.classList.remove("active");
+            if (navResults) navResults.classList.remove("active");
 
             // Hide all view containers
             if (dashboardView) dashboardView.style.display = "none";
             if (profileView) profileView.style.display = "none";
             if (instructionsView) instructionsView.style.display = "none";
+            if (resultsView) resultsView.style.display = "none";
 
             if (viewName === "profile") {
                 profileView.style.display = "block";
@@ -1899,6 +2053,15 @@
                 welcomeHeading.textContent = "Examination Instructions";
                 welcomeSubtext.textContent = "Please review these guidelines carefully before starting your examination.";
                 window.history.replaceState(null, "", "#instructions");
+            } else if (viewName === "results") {
+                resultsView.style.display = "flex";
+                if (navResults) navResults.classList.add("active");
+                if (btnTopSchedule) btnTopSchedule.style.display = "none";
+
+                welcomeHeading.textContent = "Examination Results";
+                welcomeSubtext.textContent = "Review your assessment performance, marks, and evaluation status.";
+                window.history.replaceState(null, "", "#results");
+                renderResultsView();
             } else {
                 dashboardView.style.display = "flex";
                 if (navDashboard) navDashboard.classList.add("active");
@@ -2035,8 +2198,8 @@
                 upcomingBadge.textContent = "No Active Exam";
                 upcomingContainer.innerHTML = `
                     <div class="empty-state-box">
-                        <div style="width: 48px; height: 48px; border-radius: 12px; background: #fffbeb; color: #d97706; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.25rem;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <div style="width: 52px; height: 52px; border-radius: 12px; background: #fffbeb; color: #d97706; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem; border: 1px solid #fef3c7;">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -2107,10 +2270,10 @@
                 overallBadge.innerHTML = `<span class="pulse-dot"></span> Testing...`;
             } else if (camera === 'ready' && browser === 'ready' && net === 'ready') {
                 overallBadge.className = "status-badge badge-active";
-                overallBadge.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"></polyline></svg>System Ready`;
+                overallBadge.textContent = "✓ System Ready";
             } else if (camera === 'failed' || browser === 'failed' || net === 'failed') {
                 overallBadge.className = "status-badge badge-failed";
-                overallBadge.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 4px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Action Required`;
+                overallBadge.textContent = "Action Required";
             } else {
                 overallBadge.className = "status-badge badge-neutral";
                 overallBadge.textContent = "Run System Check";
@@ -2134,11 +2297,11 @@
                 stream.getTracks().forEach(track => track.stop());
 
                 checkResults.camera = 'ready';
-                actionBox.innerHTML = `<span class="status-badge badge-active"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 3px;"><polyline points="20 6 9 17 4 12"></polyline></svg>Ready</span>`;
+                actionBox.innerHTML = `<span class="status-badge badge-active">✓ Ready</span>`;
             } catch (err) {
                 checkResults.camera = 'failed';
                 actionBox.innerHTML = `
-                    <span class="status-badge badge-failed" style="margin-right: 0.35rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 3px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>Failed</span>
+                    <span class="status-badge badge-failed" style="margin-right: 0.35rem;">✕ Failed</span>
                     <button type="button" class="btn-check-pill" onclick="runCameraCheck()">Retry</button>
                 `;
             }
@@ -2164,14 +2327,14 @@
 
                 if (hasMedia && hasVisibility && hasEvents && hasFetch) {
                     checkResults.browser = 'ready';
-                    actionBox.innerHTML = `<span class="status-badge badge-active"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 3px;"><polyline points="20 6 9 17 4 12"></polyline></svg>Supported</span>`;
+                    actionBox.innerHTML = `<span class="status-badge badge-active">✓ Supported</span>`;
                 } else {
                     throw new Error("Missing browser capabilities for proctoring");
                 }
             } catch (err) {
                 checkResults.browser = 'failed';
                 actionBox.innerHTML = `
-                    <span class="status-badge badge-failed" style="margin-right: 0.35rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 3px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>Unsupported</span>
+                    <span class="status-badge badge-failed" style="margin-right: 0.35rem;">✕ Unsupported</span>
                     <button type="button" class="btn-check-pill" onclick="runBrowserCheck()">Retry</button>
                 `;
             }
@@ -2199,14 +2362,14 @@
 
                 if (res.ok) {
                     checkResults.net = 'ready';
-                    actionBox.innerHTML = `<span class="status-badge badge-active"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 3px;"><polyline points="20 6 9 17 4 12"></polyline></svg>Connected</span>`;
+                    actionBox.innerHTML = `<span class="status-badge badge-active">✓ Connected</span>`;
                 } else {
                     throw new Error("Health check non-200");
                 }
             } catch (err) {
                 checkResults.net = 'failed';
                 actionBox.innerHTML = `
-                    <span class="status-badge badge-failed" style="margin-right: 0.35rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 3px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>Connection Failed</span>
+                    <span class="status-badge badge-failed" style="margin-right: 0.35rem;">✕ Connection Failed</span>
                     <button type="button" class="btn-check-pill" onclick="runNetworkCheck()">Retry</button>
                 `;
             }
@@ -2228,9 +2391,10 @@
             btn.disabled = false;
             btn.innerHTML = `
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="23 4 23 10 17 10"></polyline>
-                    <polyline points="1 20 1 14 7 14"></polyline>
-                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                    <path d="M3 3v5h5"></path>
+                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
+                    <path d="M16 21h5v-5"></path>
                 </svg>
                 <span>Run All Checks</span>
             `;
@@ -2293,6 +2457,117 @@
             } finally {
                 window.location.href = "/login";
             }
+        }
+
+        // ==========================================================================
+        // Academic Examination Results View Rendering (Candidate-Facing)
+        // ==========================================================================
+        function renderResultsView() {
+            const listEl = document.getElementById("results-list");
+            if (!listEl) return;
+
+            const submittedSessions = (candidateSessions || []).filter(s => s.status === "submitted");
+
+            if (submittedSessions.length === 0) {
+                listEl.innerHTML = `
+                    <div class="empty-state-box" style="padding: 3rem 1rem;">
+                        <div class="state-icon" style="width: 52px; height: 52px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem; color: var(--text-muted);">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <h3>No Completed Examinations Yet</h3>
+                        <p style="max-width: 420px; font-size: var(--font-sm); color: var(--text-muted); line-height: 1.5;">
+                            When you finish and submit an examination, your official academic results and evaluation status will appear here.
+                        </p>
+                        <button class="btn-primary" onclick="openScheduleModal()" style="margin-top: 0.75rem; padding: 0.65rem 1.25rem;">
+                            Schedule an Examination
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const cardsHtml = submittedSessions.map(sess => {
+                const formattedDate = sess.ended_at
+                    ? new Date(sess.ended_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+                    : (sess.created_at ? new Date(sess.created_at).toLocaleDateString() : "Recently Submitted");
+
+                const formattedTime = sess.ended_at
+                    ? new Date(sess.ended_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+                    : "--:--";
+
+                return `
+                    <div class="result-card" id="academic-result-${sess.id}">
+                        <div class="result-header">
+                            <div>
+                                <div class="result-title">${escapeHtml(sess.exam_identifier)}</div>
+                                <div class="result-meta">
+                                    <span>Session ID: #${sess.id}</span>
+                                    <span>•</span>
+                                    <span>Submitted: ${formattedDate} at ${formattedTime}</span>
+                                </div>
+                            </div>
+                            <div class="academic-status-pill">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                <span>Submitted</span>
+                            </div>
+                        </div>
+
+                        <!-- Academic Performance Metrics Grid -->
+                        <div class="result-metrics-grid">
+                            <div class="result-metric-card">
+                                <span class="metric-label">Marks Obtained</span>
+                                <div class="metric-main-value" style="color: var(--text-dark);">
+                                    -- <span style="font-size: 0.95rem; font-weight: 600; color: var(--text-muted);">/ --</span>
+                                </div>
+                                <span class="metric-sub">Evaluation in progress</span>
+                            </div>
+
+                            <div class="result-metric-card">
+                                <span class="metric-label">Percentage</span>
+                                <div class="metric-main-value" style="color: #2563eb; font-size: 1.25rem;">Pending</div>
+                                <span class="metric-sub">Awaiting score release</span>
+                            </div>
+
+                            <div class="result-metric-card">
+                                <span class="metric-label">Grade</span>
+                                <div class="metric-main-value" style="color: #64748b; font-size: 1.25rem;">Pending</div>
+                                <span class="metric-sub">Institutional scale</span>
+                            </div>
+
+                            <div class="result-metric-card">
+                                <span class="metric-label">Evaluation Status</span>
+                                <div class="metric-main-value" style="color: #d97706; font-size: 1.1rem; font-weight: 700;">Result Pending</div>
+                                <span class="metric-sub">Academic result will appear after evaluation</span>
+                            </div>
+                        </div>
+
+                        <!-- Academic Evaluation Notice -->
+                        <div class="academic-notice-box">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; color: #64748b;" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            <span>Academic evaluation is currently in progress. Your marks, percentage, and final grade will appear here once evaluation is completed and approved by the academic committee.</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            listEl.innerHTML = cardsHtml.join("");
+        }
+
+        function escapeHtml(str) {
+            if (!str) return "";
+            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
         }
     </script>
 </body>
